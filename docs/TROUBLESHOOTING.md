@@ -84,6 +84,11 @@ For x86-64 models, inspect the build log in Container Manager. Network or DNS
 errors during `apt-get` or `pip install` usually indicate that the NAS cannot
 reach Debian or Python package repositories.
 
+If container creation fails with `NanoCPUs can not be set` or reports that the
+kernel does not support the CPU CFS scheduler, remove any `cpus` setting from
+the Container Manager project and recreate it. The supplied `compose.yaml`
+omits this setting for compatibility with these kernels.
+
 ## The STL still looks wrong in a slicer
 
 The server will only return a mesh that is watertight, consistently wound, a

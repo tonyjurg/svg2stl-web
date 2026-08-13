@@ -82,9 +82,11 @@ Edit the environment values in `compose.yaml` before rebuilding:
 | `CONVERSION_TIMEOUT_SECONDS` | `180` | Maximum duration of a conversion process |
 | `MAX_CONCURRENT_CONVERSIONS` | `1` | Number of simultaneous conversion jobs |
 
-The Compose file also limits the container to 1 GB RAM, 2 CPUs, 128 processes,
-and 256 MB of temporary storage. Increase the memory or temporary-storage limit
-only when legitimate complex SVG files consistently exceed it.
+The Compose file also limits the container to 1 GB RAM, 128 processes, and
+256 MB of temporary storage. It intentionally does not set a CPU quota because
+some NAS kernels, including some Synology releases, do not support Docker's CPU
+CFS quota. Increase the memory or temporary-storage limit only when legitimate
+complex SVG files consistently exceed it.
 
 To publish a different host port, change only the first number:
 

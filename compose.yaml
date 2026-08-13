@@ -19,5 +19,4 @@ services:
       - ALL
     pids_limit: 128
     mem_limit: 1g
-    cpus: 2.0
 

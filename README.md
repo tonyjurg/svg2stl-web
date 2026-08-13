@@ -1,7 +1,7 @@
 # SVG to STL Web
 
 [![Verify](https://github.com/tonyjurg/svg2stl-web/actions/workflows/verify.yml/badge.svg)](https://github.com/tonyjurg/svg2stl-web/actions/workflows/verify.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/tonyjurg/svg2stl-web)
 
 A self-hosted web application that converts closed SVG paths into a validated
 STL. It can create either a stencil plate with the artwork cut out or the solid
@@ -96,7 +96,6 @@ SVG primitives such as circles and rectangles to paths before uploading.
 - [Contributing](CONTRIBUTING.md)
 - [Code of conduct](CODE_OF_CONDUCT.md)
 - [Security policy](SECURITY.md)
-- [AI-assisted development disclosure](AI_ASSISTED_DEVELOPMENT.md)
 
 ## Important limitations
 

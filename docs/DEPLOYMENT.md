@@ -74,13 +74,21 @@ Synology documents the Project workflow in its
 
 ## Configuration
 
-Edit the environment values in `compose.yaml` before rebuilding:
+Edit the environment values in `compose.yaml` before recreating the service:
 
 | Variable | Default | Description |
 | --- | ---: | --- |
 | `MAX_UPLOAD_BYTES` | `5242880` | Maximum uploaded SVG size in bytes |
 | `CONVERSION_TIMEOUT_SECONDS` | `180` | Maximum duration of a conversion process |
 | `MAX_CONCURRENT_CONVERSIONS` | `1` | Number of simultaneous conversion jobs |
+| `DIAGNOSTIC_ERRORS` | `false` | Show bounded worker exit diagnostics in conversion errors |
+
+Set `DIAGNOSTIC_ERRORS` to `"true"` temporarily when a conversion fails with
+no useful explanation. Recreate the container after changing the value; an
+image rebuild is not required. Diagnostic mode identifies signals such as
+`SIGKILL`, `SIGSEGV`, and `SIGILL`, includes a bounded tail of worker output,
+and removes container filesystem paths. Disable it again after troubleshooting,
+particularly when the service is reachable outside a trusted network.
 
 The Compose file also limits the container to 1 GB RAM, 128 processes, and
 256 MB of temporary storage. It intentionally does not set a CPU quota because

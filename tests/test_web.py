@@ -126,3 +126,59 @@ def test_worker_failure_is_returned_as_a_safe_client_error(monkeypatch):
 
     assert response.status_code == 422
     assert response.json()["detail"] == "No usable closed SVG contours were found"
+
+
+def test_structured_worker_error_is_returned_without_diagnostic_mode(monkeypatch):
+    monkeypatch.setattr(web, "DIAGNOSTIC_ERRORS", False)
+
+    detail = web._worker_error('{"error":"Invalid closed contour"}', 1)
+
+    assert detail == "Invalid closed contour"
+
+
+def test_unstructured_worker_error_is_hidden_by_default(monkeypatch):
+    monkeypatch.setattr(web, "DIAGNOSTIC_ERRORS", False)
+
+    detail = web._worker_error("native converter output", -11)
+
+    assert detail == "Conversion failed before a valid STL could be produced"
+
+
+def test_diagnostic_worker_error_decodes_kill_signal(monkeypatch):
+    monkeypatch.setattr(web, "DIAGNOSTIC_ERRORS", True)
+
+    detail = web._worker_error("", -9)
+
+    assert "SIGKILL (signal 9)" in detail
+    assert "out-of-memory kill" in detail
+    assert "No diagnostic output was captured" in detail
+
+
+def test_diagnostic_worker_error_bounds_and_sanitizes_output(monkeypatch):
+    monkeypatch.setattr(web, "DIAGNOSTIC_ERRORS", True)
+    stderr = (
+        'File "/app/app/worker.py", line 10\nRuntimeError: failed in /tmp/input.svg'
+    )
+
+    detail = web._worker_error(stderr, 1)
+
+    assert "exited with status 1" in detail
+    assert "RuntimeError" in detail
+    assert "/app/app/worker.py" not in detail
+    assert "/tmp/input.svg" not in detail
+    assert len(detail) < web.MAX_DIAGNOSTIC_CHARS + 200
+
+
+def test_diagnostic_mode_returns_worker_signal_to_web_client(monkeypatch):
+    monkeypatch.setattr(web, "DIAGNOSTIC_ERRORS", True)
+    completed = web.subprocess.CompletedProcess([], -9, stdout="", stderr="")
+    monkeypatch.setattr(web.subprocess, "run", lambda *args, **kwargs: completed)
+
+    with EXAMPLE.open("rb") as source:
+        response = client.post(
+            "/api/convert",
+            files={"svg": ("example.svg", source, "image/svg+xml")},
+        )
+
+    assert response.status_code == 422
+    assert "SIGKILL (signal 9)" in response.json()["detail"]

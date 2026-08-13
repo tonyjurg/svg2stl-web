@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import os
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -24,6 +26,14 @@ BASE_DIR = Path(__file__).resolve().parent
 MAX_UPLOAD_BYTES = int(os.getenv("MAX_UPLOAD_BYTES", 5 * 1024 * 1024))
 CONVERSION_TIMEOUT_SECONDS = int(os.getenv("CONVERSION_TIMEOUT_SECONDS", 180))
 MAX_CONCURRENT_CONVERSIONS = int(os.getenv("MAX_CONCURRENT_CONVERSIONS", 1))
+DIAGNOSTIC_ERRORS = os.getenv("DIAGNOSTIC_ERRORS", "false").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+    "on",
+}
+MAX_DIAGNOSTIC_CHARS = 1600
+LOGGER = logging.getLogger("uvicorn.error")
 
 app = FastAPI(
     title="SVG to STL",
@@ -118,7 +128,7 @@ def _preflight_svg(path: Path) -> None:
         document.unlink()
 
 
-def _worker_error(stderr: str) -> str:
+def _structured_worker_error(stderr: str) -> str | None:
     """Extract the worker's final JSON error without exposing command details."""
     for line in reversed(stderr.splitlines()):
         try:
@@ -127,7 +137,55 @@ def _worker_error(stderr: str) -> str:
             continue
         if isinstance(payload, dict) and payload.get("error"):
             return str(payload["error"])
-    return "Conversion failed before a valid STL could be produced"
+    return None
+
+
+def _diagnostic_excerpt(output: str) -> str:
+    """Return a bounded diagnostic tail without container filesystem paths."""
+    lines = [line.strip() for line in output.splitlines() if line.strip()]
+    excerpt = " | ".join(lines[-12:])
+    excerpt = re.sub(r'File "[^"]+"', 'File "<internal>"', excerpt)
+    excerpt = re.sub(r"/(?:app|tmp)/[^\s\"']+", "<internal-path>", excerpt)
+    return excerpt[-MAX_DIAGNOSTIC_CHARS:]
+
+
+def _worker_error(stderr: str, returncode: int, stdout: str = "") -> str:
+    """Return a safe worker error, with opt-in abnormal-exit diagnostics."""
+    if structured_error := _structured_worker_error(stderr):
+        return structured_error
+
+    if not DIAGNOSTIC_ERRORS:
+        return "Conversion failed before a valid STL could be produced"
+
+    if returncode < 0:
+        signal_number = -returncode
+        known_signal_names = {4: "SIGILL", 9: "SIGKILL", 11: "SIGSEGV"}
+        signal_name = known_signal_names.get(signal_number)
+        if signal_name is None:
+            try:
+                signal_name = signal.Signals(signal_number).name
+            except ValueError:
+                signal_name = "UNKNOWN_SIGNAL"
+        summary = (
+            f"Conversion worker terminated by {signal_name} (signal {signal_number})."
+        )
+        hints = {
+            4: "The converter may have used an instruction unsupported by this CPU.",
+            9: (
+                "The process was forcibly killed; on a constrained NAS this often "
+                "indicates an out-of-memory kill."
+            ),
+            11: "The native converter crashed with a segmentation fault.",
+        }
+        if hint := hints.get(signal_number):
+            summary = f"{summary} {hint}"
+    else:
+        summary = f"Conversion worker exited with status {returncode}."
+
+    excerpt = _diagnostic_excerpt(stderr) or _diagnostic_excerpt(stdout)
+    if excerpt:
+        return f"{summary} Diagnostic output: {excerpt}"
+    return f"{summary} No diagnostic output was captured."
 
 
 def _run_worker(
@@ -176,7 +234,20 @@ def _run_worker(
         ) from error
 
     if completed.returncode != 0:
-        raise HTTPException(status_code=422, detail=_worker_error(completed.stderr))
+        LOGGER.error(
+            "Conversion worker failed with return code %s; stderr=%s; stdout=%s",
+            completed.returncode,
+            _diagnostic_excerpt(completed.stderr) or "<empty>",
+            _diagnostic_excerpt(completed.stdout) or "<empty>",
+        )
+        raise HTTPException(
+            status_code=422,
+            detail=_worker_error(
+                completed.stderr,
+                completed.returncode,
+                completed.stdout,
+            ),
+        )
 
     try:
         report = json.loads(completed.stdout.splitlines()[-1])

@@ -85,7 +85,10 @@ API errors use FastAPI's JSON shape:
 | 500 | Unexpected worker or server failure |
 
 Error details are deliberately controlled and do not include the worker command
-or server filesystem paths.
+or server filesystem paths. When the runtime variable `DIAGNOSTIC_ERRORS` is
+`true`, abnormal worker exits include the exit status or signal and a bounded,
+path-sanitized tail of worker output. This mode is intended for temporary
+troubleshooting and is disabled by default.
 
 ## Concurrency and cleanup
 

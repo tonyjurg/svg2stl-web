@@ -74,6 +74,23 @@ Also inspect container memory use. The supplied limit is 1 GB. Raising the
 timeout will not help when the worker is being terminated for exceeding the
 memory limit.
 
+## Conversion failed without a useful explanation
+
+If the web interface reports `Conversion failed before a valid STL could be
+produced`, temporarily enable runtime diagnostics in `compose.yaml`:
+
+```yaml
+environment:
+  DIAGNOSTIC_ERRORS: "true"
+```
+
+Recreate the project in Container Manager; rebuilding the image is unnecessary.
+Retry the conversion and the web interface will report the worker's exit status
+or termination signal plus a bounded, path-sanitized diagnostic excerpt. For
+example, `SIGKILL` can indicate an out-of-memory kill, `SIGSEGV` a native crash,
+and `SIGILL` an unsupported CPU instruction. Set the option back to `"false"`
+after troubleshooting, especially if untrusted users can access the service.
+
 ## Container image fails to build on Synology
 
 Check the NAS processor architecture. The supplied image targets x86-64. ARM

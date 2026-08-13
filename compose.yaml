@@ -1,0 +1,23 @@
+services:
+  svg2stl-web:
+    build:
+      context: .
+    container_name: svg2stl-web
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      MAX_UPLOAD_BYTES: "5242880"
+      CONVERSION_TIMEOUT_SECONDS: "180"
+      MAX_CONCURRENT_CONVERSIONS: "1"
+    read_only: true
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 128
+    mem_limit: 1g
+    cpus: 2.0
+

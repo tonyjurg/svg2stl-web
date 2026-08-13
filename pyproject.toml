@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "svg2stl-web"
+version = "0.1.0"
+description = "Self-hosted web interface for converting SVG artwork to validated STL files"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+dependencies = [
+  "defusedxml>=0.7,<1",
+  "fastapi>=0.116,<1",
+  "gmsh>=4.15,<5",
+  "jinja2>=3.1,<4",
+  "numpy>=2,<3",
+  "python-multipart>=0.0.20,<1",
+  "svg.path>=7,<8",
+  "trimesh>=4.12,<6",
+  "uvicorn[standard]>=0.35,<1",
+]
+
+[project.urls]
+Homepage = "https://github.com/tonyjurg/svg2stl-web"
+Documentation = "https://github.com/tonyjurg/svg2stl-web/tree/main/docs"
+Issues = "https://github.com/tonyjurg/svg2stl-web/issues"
+Repository = "https://github.com/tonyjurg/svg2stl-web.git"
+
+[project.optional-dependencies]
+test = [
+  "httpx>=0.28,<1",
+  "pytest>=8,<10",
+  "pyyaml>=6,<7",
+  "ruff>=0.12,<1",
+]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.setuptools.package-data]
+app = ["templates/*.html", "static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

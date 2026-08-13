@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>SVG to STL</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+    <script src="{{ url_for('static', path='/app.js') }}" defer></script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="kicker">STENCIL WORKSHOP</p>
+        <h1>SVG to STL</h1>
+      </div>
+      <div class="service-state" aria-label="Service available">
+        <span class="state-dot" aria-hidden="true"></span>
+        Local service
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="control-pane" aria-labelledby="input-heading">
+        <div class="section-heading">
+          <span class="step-number">01</span>
+          <div>
+            <h2 id="input-heading">Source artwork</h2>
+            <p>Closed SVG paths</p>
+          </div>
+        </div>
+
+        <label class="drop-zone" id="drop-zone" for="svg-file">
+          <input id="svg-file" name="svg" type="file" accept=".svg,image/svg+xml" required>
+          <span class="drop-mark" aria-hidden="true">+</span>
+          <strong id="drop-title">Choose an SVG</strong>
+          <span id="drop-detail">or drop it here · up to {{ max_upload_mb }} MB</span>
+        </label>
+
+        <form id="conversion-form">
+          <div class="section-heading settings-heading">
+            <span class="step-number">02</span>
+            <div>
+              <h2>Output settings</h2>
+              <p>Dimensions in millimetres</p>
+            </div>
+          </div>
+
+          <fieldset class="mode-field">
+            <legend>Output</legend>
+            <div class="segmented-control">
+              <label>
+                <input type="radio" name="output_mode" value="stencil" checked>
+                <span>Stencil</span>
+              </label>
+              <label>
+                <input type="radio" name="output_mode" value="shape">
+                <span>SVG shape</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="field-grid">
+            <label class="field">
+              <span>Artwork height</span>
+              <span class="input-unit">
+                <input name="height_mm" type="number" value="80" min="5" max="1000" step="1" required>
+                <span>mm</span>
+              </span>
+            </label>
+            <label class="field">
+              <span>Plate thickness</span>
+              <span class="input-unit">
+                <input name="thickness_mm" type="number" value="3" min="0.4" max="50" step="0.1" required>
+                <span>mm</span>
+              </span>
+            </label>
+            <label class="field" id="border-field">
+              <span>Outer border</span>
+              <span class="input-unit">
+                <input id="border-mm" name="border_mm" type="number" value="10" min="0" max="200" step="0.5" required>
+                <span>mm</span>
+              </span>
+            </label>
+          </div>
+
+          <label class="range-field">
+            <span class="range-label">
+              <span>Curve detail</span>
+              <output id="detail-output" for="definition">12</output>
+            </span>
+            <input id="definition" name="definition" type="range" value="12" min="3" max="48" step="1">
+            <span class="range-scale"><span>Faster</span><span>Smoother</span></span>
+          </label>
+
+          <div id="error-message" class="message error-message" role="alert" hidden></div>
+
+          <button id="convert-button" class="primary-button" type="submit" disabled>
+            <span class="button-label">Create stencil</span>
+            <span class="button-progress" aria-hidden="true"></span>
+          </button>
+        </form>
+      </section>
+
+      <section class="preview-pane" aria-labelledby="preview-heading">
+        <div class="section-heading preview-heading">
+          <span class="step-number">03</span>
+          <div>
+            <h2 id="preview-heading">Preview</h2>
+            <p id="preview-status">Awaiting artwork</p>
+          </div>
+          <button id="clear-file" class="icon-button" type="button" title="Clear selected SVG" aria-label="Clear selected SVG" hidden>×</button>
+        </div>
+
+        <div class="preview-stage" id="preview-stage">
+          <div class="empty-preview" id="empty-preview">
+            <span class="empty-frame" aria-hidden="true"></span>
+            <p>No SVG selected</p>
+          </div>
+          <img id="svg-preview" alt="Selected SVG artwork preview" hidden>
+        </div>
+
+        <div class="result-panel" id="result-panel" hidden>
+          <div class="result-heading">
+            <div>
+              <p class="result-label">VALIDATED STL</p>
+              <h2 id="result-name">Stencil ready</h2>
+            </div>
+            <span class="validation-mark" aria-label="Validation passed">✓</span>
+          </div>
+          <dl class="mesh-metrics">
+            <div><dt>Size</dt><dd id="metric-size">—</dd></div>
+            <div><dt>Triangles</dt><dd id="metric-faces">—</dd></div>
+            <div><dt>Watertight</dt><dd id="metric-watertight">—</dd></div>
+            <div><dt>Winding</dt><dd id="metric-winding">—</dd></div>
+          </dl>
+          <a id="download-link" class="download-button" download>
+            <span aria-hidden="true">↓</span>
+            Download STL
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Files are deleted after conversion</span>
+      <span>Validated before download</span>
+    </footer>
+  </body>
+</html>

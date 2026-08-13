@@ -1,0 +1,60 @@
+name: Bug report
+description: Report a reproducible conversion, interface, or deployment problem
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve SVG to STL Web. Do not include private artwork, credentials, tokens, or NAS addresses.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Commit hash, release, or container image tag
+      placeholder: abc1234
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Output mode
+      options:
+        - Stencil
+        - SVG shape
+        - Not conversion-related
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Problem
+      description: What happened, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Include settings and a small redistributable SVG when possible.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, local or Docker deployment, operating system or DSM version, and CPU architecture
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues.
+          required: true
+        - label: I removed secrets and private artwork from this report.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true

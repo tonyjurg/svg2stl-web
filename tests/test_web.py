@@ -1,0 +1,128 @@
+"""HTTP tests for uploads, validation, and STL downloads."""
+
+from pathlib import Path
+
+import numpy as np
+from fastapi.testclient import TestClient
+
+import app.main as web
+from app.converter import analyze_stl
+
+ROOT = Path(__file__).parents[1]
+EXAMPLE = ROOT / "examples" / "simple_shapes.svg"
+client = TestClient(web.app)
+
+
+def test_home_page_and_health_endpoint():
+    page = client.get("/")
+    health = client.get("/api/health")
+
+    assert page.status_code == 200
+    assert "SVG to STL" in page.text
+    assert "Create stencil" in page.text
+    assert "SVG shape" in page.text
+    assert health.json() == {"status": "ok"}
+    assert "frame-ancestors 'none'" in page.headers["content-security-policy"]
+    assert page.headers["x-content-type-options"] == "nosniff"
+
+
+def test_conversion_endpoint_returns_a_valid_stl(tmp_path):
+    with EXAMPLE.open("rb") as source:
+        response = client.post(
+            "/api/convert",
+            files={"svg": ("simple shapes.svg", source, "image/svg+xml")},
+            data={
+                "thickness_mm": "2",
+                "height_mm": "30",
+                "border_mm": "5",
+                "definition": "8",
+            },
+        )
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("model/stl")
+    assert "simple_shapes_stencil.stl" in response.headers["content-disposition"]
+    assert response.headers["x-mesh-watertight"] == "true"
+    assert response.headers["x-mesh-winding"] == "true"
+
+    output = tmp_path / "download.stl"
+    output.write_bytes(response.content)
+    assert analyze_stl(output).printable
+
+
+def test_shape_mode_returns_the_svg_form_without_a_border(tmp_path):
+    with EXAMPLE.open("rb") as source:
+        response = client.post(
+            "/api/convert",
+            files={"svg": ("simple shapes.svg", source, "image/svg+xml")},
+            data={
+                "thickness_mm": "2",
+                "height_mm": "30",
+                "border_mm": "50",
+                "definition": "8",
+                "output_mode": "shape",
+            },
+        )
+
+    assert response.status_code == 200
+    assert "simple_shapes_shape.stl" in response.headers["content-disposition"]
+    assert response.headers["x-output-mode"] == "shape"
+    assert np.isclose(float(response.headers["x-mesh-height"]), 30.0)
+
+    output = tmp_path / "shape.stl"
+    output.write_bytes(response.content)
+    assert analyze_stl(output).printable
+
+
+def test_non_svg_extension_is_rejected():
+    response = client.post(
+        "/api/convert",
+        files={"svg": ("drawing.txt", b"not an svg", "text/plain")},
+    )
+
+    assert response.status_code == 415
+    assert response.json()["detail"] == "Choose a file ending in .svg"
+
+
+def test_svg_without_path_data_is_rejected():
+    response = client.post(
+        "/api/convert",
+        files={
+            "svg": (
+                "empty.svg",
+                b'<svg xmlns="http://www.w3.org/2000/svg"><circle r="5"/></svg>',
+                "image/svg+xml",
+            )
+        },
+    )
+
+    assert response.status_code == 400
+    assert "convert shapes and text to paths" in response.json()["detail"]
+
+
+def test_upload_limit_is_enforced(monkeypatch):
+    monkeypatch.setattr(web, "MAX_UPLOAD_BYTES", 20)
+    response = client.post(
+        "/api/convert",
+        files={"svg": ("large.svg", b"<svg>" + b"x" * 30 + b"</svg>", "image/svg+xml")},
+    )
+
+    assert response.status_code == 413
+
+
+def test_worker_failure_is_returned_as_a_safe_client_error(monkeypatch):
+    def fail_worker(*args, **kwargs):
+        raise web.HTTPException(
+            status_code=422,
+            detail="No usable closed SVG contours were found",
+        )
+
+    monkeypatch.setattr(web, "_run_worker", fail_worker)
+    with EXAMPLE.open("rb") as source:
+        response = client.post(
+            "/api/convert",
+            files={"svg": ("example.svg", source, "image/svg+xml")},
+        )
+
+    assert response.status_code == 422
+    assert response.json()["detail"] == "No usable closed SVG contours were found"

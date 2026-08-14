@@ -45,6 +45,42 @@ a browser blob and parsed locally for the optional Three.js preview; it is not
 sent to another endpoint. Three.js, STLLoader, and OrbitControls are pinned and
 served from `app/static`, so the interface has no CDN or internet dependency.
 
+## Project lineage and dependency boundary
+
+The conversion code has this source lineage:
+
+```text
+MaxHalford/svg2stl
+  -> avipars/svg2stl
+  -> tonyjurg/FORK-svg2stl and subsequent mesh-validation work
+  -> svg2stl-web
+```
+
+[MaxHalford/svg2stl](https://github.com/MaxHalford/svg2stl) introduced the
+core stencil approach: parse SVG paths, sample curves, surround the artwork
+with a rectangular plate, and use Gmsh to produce an STL.
+[avipars/svg2stl](https://github.com/avipars/svg2stl) is a GitHub fork that
+continued and packaged that implementation. Tony's
+[FORK-svg2stl](https://github.com/tonyjurg/FORK-svg2stl) and later development
+work added OpenCASCADE volume extrusion, outward face orientation, and
+printability validation. Those ideas and parts of that converter were then
+adapted into this application.
+
+This is source-code lineage, not a live runtime dependency. `svg2stl-web`
+contains its converter locally and does not install an `svg2stl` package, use
+a Git submodule, call an upstream API, or fetch code from any of those
+repositories. It continues to build and run if the earlier repositories are
+unavailable; its actual install-time dependencies are the packages declared
+in `pyproject.toml`, most notably Gmsh, NumPy, `svg.path`, and trimesh.
+
+The web service, isolated worker, solid-shape mode, browser previews, Docker
+deployment, upload controls, diagnostics, and current validation workflow are
+specific to this repository. The public repository deliberately started with
+fresh Git history, so GitHub does not display it as a fork even though the
+upstream code lineage and MIT attribution remain documented. See
+[Licensing and third-party components](LICENSES.md) for the applicable notices
+and the separate Gmsh licensing terms.
+
 ## Conversion pipeline
 
 1. Parse the SVG as XML with external entities disabled.

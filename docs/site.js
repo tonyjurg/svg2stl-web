@@ -26,7 +26,9 @@ document.addEventListener("keydown", (event) => {
 function setMotionPaused(paused) {
   document.documentElement.classList.toggle("motion-paused", paused);
   motionToggle.setAttribute("aria-pressed", String(paused));
-  motionLabel.textContent = paused ? "Play animations" : "Pause animations";
+  motionLabel.textContent = paused
+    ? "Play screenshot motion"
+    : "Pause screenshot motion";
 }
 
 function followMotionPreference() {

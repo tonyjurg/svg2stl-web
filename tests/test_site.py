@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-SITE = ROOT / "site"
+SITE = ROOT / "docs"
 
 
 class PageParser(HTMLParser):
@@ -36,9 +36,16 @@ def parse_page() -> PageParser:
 
 def test_pages_site_links_to_every_detailed_guide() -> None:
     page = (SITE / "index.html").read_text(encoding="utf-8")
-    for guide in ("USAGE", "DEPLOYMENT", "TROUBLESHOOTING", "API", "DEVELOPMENT"):
-        assert f"docs/{guide}.md" in page
-    assert "/blob/main/SECURITY.md" in page
+    for guide in (
+        "usage",
+        "deployment",
+        "authentication",
+        "troubleshooting",
+        "api",
+        "development",
+        "security",
+    ):
+        assert f"manual.html?guide={guide}" in page
 
 
 def test_pages_site_has_valid_local_references_and_fragments() -> None:
@@ -51,24 +58,47 @@ def test_pages_site_has_valid_local_references_and_fragments() -> None:
             continue
         if parsed.path:
             assert (SITE / parsed.path).is_file(), reference
-        if parsed.fragment:
+        if parsed.fragment and not parsed.path:
             assert parsed.fragment in parser.ids, reference
 
 
-def test_pages_site_includes_both_animated_outputs_and_reduced_motion() -> None:
+def test_pages_site_uses_real_screenshots_and_reduced_motion() -> None:
     page = (SITE / "index.html").read_text(encoding="utf-8")
     styles = (SITE / "styles.css").read_text(encoding="utf-8")
 
     assert "Create precise stencils from your SVG artwork" in page
     assert "Stencil is the main event" in page
     assert "Design stencil bridges" in page
-    assert 'class="form-animation"' in page
-    assert 'class="stencil-animation"' in page
+    for screenshot in (
+        "app-source.png",
+        "app-stencil-result.png",
+        "app-solid-result.png",
+    ):
+        assert f"assets/{screenshot}" in page
+        assert (SITE / "assets" / screenshot).is_file()
     assert 'id="motion-toggle"' in page
-    assert "@keyframes form-rise" in styles
-    assert "@keyframes cutter-drop" in styles
-    assert "@keyframes stencil-lift" in styles
+    assert "@keyframes screenshot-drift" in styles
     assert "@media (prefers-reduced-motion: reduce)" in styles
+
+
+def test_integrated_manual_can_load_every_markdown_guide() -> None:
+    manual = (SITE / "manual.html").read_text(encoding="utf-8")
+    script = (SITE / "manual.js").read_text(encoding="utf-8")
+    for filename in (
+        "USAGE.md",
+        "DEPLOYMENT.md",
+        "AUTHENTICATION.md",
+        "TROUBLESHOOTING.md",
+        "API.md",
+        "DEVELOPMENT.md",
+        "SECURITY.md",
+    ):
+        assert filename in script
+        assert (SITE / filename).is_file()
+    assert 'id="manual-article"' in manual
+    assert (SITE / "SECURITY.md").read_text(encoding="utf-8") == (
+        ROOT / "SECURITY.md"
+    ).read_text(encoding="utf-8")
 
 
 def test_pages_workflow_deploys_only_the_static_site() -> None:
@@ -86,7 +116,7 @@ def test_pages_workflow_deploys_only_the_static_site() -> None:
     assert any(step.get("uses") == "actions/configure-pages@v5" for step in steps)
     assert any(
         step.get("uses") == "actions/upload-pages-artifact@v4"
-        and step.get("with", {}).get("path") == "site"
+        and step.get("with", {}).get("path") == "docs"
         for step in steps
     )
     assert any(step.get("uses") == "actions/deploy-pages@v4" for step in steps)

@@ -14,7 +14,7 @@ examples/
 tests/
   test_converter.py     Geometry and validation tests
   test_web.py           HTTP and upload tests
-site/                   Static GitHub Pages project website
+docs/                   Markdown guides and the static GitHub Pages website
 compose.yaml            Hardened single-service deployment
 Dockerfile              Production image
 ```
@@ -108,9 +108,11 @@ The geometry tests perform real Gmsh conversions. They are slower than ordinary
 unit tests by design because they verify the final STL contract.
 
 GitHub Actions repeats linting and tests on Linux and builds the Docker image.
-The separate Pages workflow publishes the dependency-free files in `site/`.
-Preview that website locally with any static file server; it does not require
-the Python application or conversion dependencies.
+The separate Pages workflow publishes the dependency-free files in `docs/`.
+The landing page uses real application screenshots, and `manual.html` renders
+the Markdown guides in the site itself. Preview the directory with any static
+file server; it does not require the Python application or conversion
+dependencies.
 
 ## Python API
 

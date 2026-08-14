@@ -102,12 +102,18 @@ Run the complete local check set before pushing:
 .\.venv\Scripts\python -m ruff format --check .
 .\.venv\Scripts\python -m pytest
 .\.venv\Scripts\python -m pip check
+.\.venv\Scripts\python -m pip install ".[audit]"
+.\.venv\Scripts\python -m pip_audit --strict --progress-spinner off .
 ```
 
 The geometry tests perform real Gmsh conversions. They are slower than ordinary
 unit tests by design because they verify the final STL contract.
 
-GitHub Actions repeats linting and tests on Linux and builds the Docker image.
+GitHub Actions repeats linting and tests on Linux, builds the Docker image, and
+runs a separate blocking audit of the Python runtime dependency tree against
+known vulnerabilities. Dependabot checks Python, GitHub Actions, and Docker
+dependencies every Monday and proposes updates as pull requests.
+
 The separate Pages workflow publishes the dependency-free files in `docs/`.
 The landing page uses real application screenshots, and `manual.html` renders
 the Markdown guides in the site itself. Preview the directory with any static

@@ -25,6 +25,19 @@ untrusted browser extensions or monitoring proxies that can read uploads. A
 misconfigured, compromised, or publicly exposed host cannot provide the same
 assurance as a properly secured local deployment.
 
+## Dependency monitoring
+
+Every push and pull request runs a blocking `pip-audit` job against the Python
+runtime dependency tree. The check fails when the Python Packaging Advisory
+Database reports a known vulnerability or when strict dependency collection
+cannot complete.
+
+Dependabot checks the Python requirements, GitHub Actions, and Docker base
+image every week and proposes updates as pull requests. `pip-audit` covers
+Python packages only; it does not replace review of Debian packages, bundled
+native libraries, container scanners, or newly disclosed issues that are not
+yet present in an advisory database.
+
 ## Reporting a vulnerability
 
 Do not open a public issue containing exploit details, credentials, private SVG

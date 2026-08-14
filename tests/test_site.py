@@ -1,3 +1,4 @@
+import tomllib
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
@@ -127,3 +128,31 @@ def test_pages_workflow_deploys_only_the_static_site() -> None:
         for step in steps
     )
     assert any(step.get("uses") == "actions/deploy-pages@v4" for step in steps)
+
+
+def test_dependency_security_automation_is_enabled() -> None:
+    dependabot = yaml.load(
+        (ROOT / ".github" / "dependabot.yml").read_text(encoding="utf-8"),
+        Loader=yaml.BaseLoader,
+    )
+    updates = dependabot["updates"]
+    assert {update["package-ecosystem"] for update in updates} == {
+        "pip",
+        "github-actions",
+        "docker",
+    }
+    assert all(update["directory"] == "/" for update in updates)
+    assert all(update["schedule"]["interval"] == "weekly" for update in updates)
+
+    workflow = yaml.load(
+        (ROOT / ".github" / "workflows" / "verify.yml").read_text(encoding="utf-8"),
+        Loader=yaml.BaseLoader,
+    )
+    audit_steps = workflow["jobs"]["audit"]["steps"]
+    assert any(step.get("uses") == "actions/setup-python@v7" for step in audit_steps)
+    assert any(
+        "python -m pip_audit --strict" in step.get("run", "") for step in audit_steps
+    )
+
+    project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    assert "pip-audit>=2.10,<3" in project["project"]["optional-dependencies"]["audit"]

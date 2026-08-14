@@ -29,6 +29,9 @@ Issues = "https://github.com/tonyjurg/svg2stl-web/issues"
 Repository = "https://github.com/tonyjurg/svg2stl-web.git"
 
 [project.optional-dependencies]
+audit = [
+  "pip-audit>=2.10,<3",
+]
 test = [
   "httpx>=0.28,<1",
   "pytest>=8,<10",

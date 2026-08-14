@@ -31,6 +31,7 @@ detailed documentation.
 - Validation for watertightness, winding, positive volume, manifold edges,
   degenerate faces, and duplicate faces
 - Automatic cleanup of uploaded and generated files
+- Blocking Python vulnerability audits and weekly Dependabot update checks
 - Responsive interface for desktop and mobile browsers
 - Read-only, non-root Docker container with bounded temporary storage
 

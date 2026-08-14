@@ -98,12 +98,14 @@ materials.
 
 ## Development and verification components
 
-These optional packages are installed by `requirements.txt` for linting and
-tests, but are not installed by the production Dockerfile.
+These optional packages support linting, tests, and dependency auditing.
+`requirements.txt` selects the `test` extra, while CI selects the separate
+`audit` extra. None are installed by the production Dockerfile.
 
 | Component | Declared version | Purpose | License |
 | --- | --- | --- | --- |
 | [HTTPX](https://pypi.org/project/httpx/) | `>=0.28,<1` | HTTP test client | BSD-3-Clause |
+| [pip-audit](https://pypi.org/project/pip-audit/) | `>=2.10,<3` | Known-vulnerability audit | Apache-2.0 |
 | [pytest](https://pypi.org/project/pytest/) | `>=8,<10` | Test runner | MIT |
 | [PyYAML](https://pypi.org/project/PyYAML/) | `>=6,<7` | Workflow-file validation | MIT |
 | [Ruff](https://pypi.org/project/ruff/) | `>=0.12,<1` | Linter and formatter | MIT |

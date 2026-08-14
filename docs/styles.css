@@ -463,6 +463,7 @@ footer a:not(.brand) { color: #5e7771; text-decoration: none; }
 .manual-article ul, .manual-article ol { margin: 0 0 24px; padding-left: 24px; }
 .manual-article li + li { margin-top: 6px; }
 .manual-article a { color: var(--teal); font-weight: 700; }
+.manual-article img { width: 100%; height: auto; margin: 10px 0 16px; display: block; border: 1px solid var(--line); border-radius: 8px; background: #f7faf7; box-shadow: 0 18px 45px rgba(31, 72, 64, 0.08); }
 .manual-article code { padding: 2px 5px; border-radius: 4px; color: #745608; background: #fff1cd; font: 600 0.88em/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 .manual-article pre { position: relative; margin: 24px 0 30px; padding: 28px; border: 1px solid #bad0c9; border-radius: 7px; color: #32544e; background: #f1f7f4; overflow-x: auto; }
 .manual-article pre::before { position: absolute; top: 8px; right: 10px; color: #82978f; content: attr(data-language); font-size: 7px; font-weight: 850; letter-spacing: 0.1em; text-transform: uppercase; }

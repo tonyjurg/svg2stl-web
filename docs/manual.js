@@ -47,6 +47,9 @@ function inlineMarkdown(value) {
     codeSpans.push(`<code>${code}</code>`);
     return `@@CODE${codeSpans.length - 1}@@`;
   });
+  output = output.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, label, target) => {
+    return `<img src="${target}" alt="${label}" loading="lazy">`;
+  });
   output = output.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, target) => {
     const href = rewriteGuideLink(target);
     const external = /^https?:\/\//.test(href) ? ' rel="noreferrer"' : "";
@@ -75,11 +78,12 @@ function renderMarkdown(markdown) {
     const line = lines[index];
     if (!line.trim()) { index += 1; continue; }
 
-    if (line.startsWith("```")) {
-      const language = line.slice(3).trim();
+    const fence = line.match(/^\s*```(.*)$/);
+    if (fence) {
+      const language = fence[1].trim();
       const code = [];
       index += 1;
-      while (index < lines.length && !lines[index].startsWith("```")) {
+      while (index < lines.length && !/^\s*```/.test(lines[index])) {
         code.push(lines[index]);
         index += 1;
       }
@@ -135,7 +139,7 @@ function renderMarkdown(markdown) {
     index += 1;
     while (index < lines.length && lines[index].trim()) {
       const next = lines[index];
-      if (/^(#{1,4})\s+/.test(next) || next.startsWith("```") || /^\s*[-*]\s+/.test(next) || /^\s*\d+\.\s+/.test(next)) break;
+      if (/^(#{1,4})\s+/.test(next) || /^\s*```/.test(next) || /^\s*[-*]\s+/.test(next) || /^\s*\d+\.\s+/.test(next)) break;
       if (next.includes("|") && index + 1 < lines.length && isTableDivider(lines[index + 1])) break;
       paragraph.push(next.trim());
       index += 1;

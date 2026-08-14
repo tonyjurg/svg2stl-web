@@ -109,6 +109,17 @@ def test_integrated_manual_can_load_every_markdown_guide() -> None:
     ).read_text(encoding="utf-8")
 
 
+def test_integrated_manual_renders_authentication_diagram_and_indented_code() -> None:
+    script = (SITE / "manual.js").read_text(encoding="utf-8")
+    authentication = (SITE / "AUTHENTICATION.md").read_text(encoding="utf-8")
+
+    assert '<img src="${target}"' in script
+    assert r"/^\s*```(.*)$/" in script
+    assert "assets/authentication-flow.svg" in authentication
+    assert "```mermaid" not in authentication
+    assert (SITE / "assets" / "authentication-flow.svg").is_file()
+
+
 def test_pages_workflow_deploys_only_the_static_site() -> None:
     workflow = yaml.load(
         (ROOT / ".github" / "workflows" / "pages.yml").read_text(encoding="utf-8"),

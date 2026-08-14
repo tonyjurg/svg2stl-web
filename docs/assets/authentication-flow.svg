@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 420" role="img" aria-labelledby="title description">
+  <title id="title">DSM authentication flow</title>
+  <desc id="description">A user connects over HTTPS to the DSM reverse proxy. DSM forwards the request to OAuth2 Proxy, which signs the user in through DSM SSO Server and sends authenticated requests to SVG to STL Web.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbfdfb"/>
+      <stop offset="1" stop-color="#eef7f2"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0 10 5 0 10Z" fill="#087c70"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-30%" width="140%" height="170%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#1f4840" flood-opacity=".10"/>
+    </filter>
+  </defs>
+
+  <rect x="1" y="1" width="1098" height="418" rx="18" fill="url(#background)" stroke="#d4e1dc" stroke-width="2"/>
+  <text x="42" y="48" fill="#087c70" font-family="Inter,Segoe UI,sans-serif" font-size="13" font-weight="800" letter-spacing="1.8">AUTHENTICATED REQUEST PATH</text>
+  <text x="42" y="78" fill="#17302d" font-family="Inter,Segoe UI,sans-serif" font-size="22" font-weight="750">DSM protects the converter before a request reaches it</text>
+
+  <g fill="none" stroke="#087c70" stroke-width="3" marker-end="url(#arrow)">
+    <path d="M228 224H282"/>
+    <path d="M478 224H532"/>
+    <path d="M728 224H770V139H818"/>
+    <path d="M728 224H770V309H818"/>
+  </g>
+
+  <g fill="#55716b" font-family="Inter,Segoe UI,sans-serif" font-size="12" font-weight="700">
+    <text x="238" y="207">HTTPS</text>
+    <text x="742" y="129">OIDC sign-in</text>
+    <text x="730" y="340">approved</text>
+  </g>
+
+  <g filter="url(#shadow)" font-family="Inter,Segoe UI,sans-serif">
+    <g transform="translate(36 168)">
+      <rect width="192" height="112" rx="12" fill="#fff" stroke="#adc4bc" stroke-width="2"/>
+      <circle cx="31" cy="34" r="13" fill="#dff2eb" stroke="#087c70" stroke-width="2"/>
+      <path d="M18 82c2-17 24-17 26 0" fill="none" stroke="#087c70" stroke-width="3" stroke-linecap="round"/>
+      <text x="58" y="44" fill="#17302d" font-size="18" font-weight="750">User browser</text>
+      <text x="58" y="70" fill="#647975" font-size="12">Opens the private app</text>
+    </g>
+
+    <g transform="translate(286 168)">
+      <rect width="192" height="112" rx="12" fill="#fff" stroke="#adc4bc" stroke-width="2"/>
+      <path d="M22 32h24v18H22zM27 37h14M27 43h14" fill="none" stroke="#087c70" stroke-width="2"/>
+      <text x="58" y="44" fill="#17302d" font-size="18" font-weight="750">DSM proxy</text>
+      <text x="58" y="70" fill="#647975" font-size="12">TLS and routing</text>
+    </g>
+
+    <g transform="translate(536 168)">
+      <rect width="192" height="112" rx="12" fill="#e6f6f0" stroke="#087c70" stroke-width="2.5"/>
+      <path d="M30 27a13 13 0 1 0 0 26 13 13 0 0 0 0-26Zm0 8v10m-5-5h10" fill="none" stroke="#087c70" stroke-width="2.4" stroke-linecap="round"/>
+      <text x="58" y="44" fill="#17302d" font-size="18" font-weight="800">OAuth2 Proxy</text>
+      <text x="58" y="70" fill="#4c6f68" font-size="12">Authentication gate</text>
+    </g>
+
+    <g transform="translate(822 84)">
+      <rect width="236" height="110" rx="12" fill="#fff8e7" stroke="#e2bd64" stroke-width="2"/>
+      <path d="M22 29h28v22H22zM28 35h16M28 41h16M28 47h10" fill="none" stroke="#9a6b08" stroke-width="2"/>
+      <text x="62" y="43" fill="#17302d" font-size="18" font-weight="750">DSM SSO Server</text>
+      <text x="62" y="69" fill="#746444" font-size="12">Verifies the DSM account</text>
+    </g>
+
+    <g transform="translate(822 254)">
+      <rect width="236" height="110" rx="12" fill="#071b1a" stroke="#10a18f" stroke-width="2"/>
+      <path d="M20 25h25l13 12v24H33L20 49Z" fill="none" stroke="#f8fffd" stroke-width="2.2" stroke-linejoin="round"/>
+      <path d="m20 25 13 12h25M33 37v24" fill="none" stroke="#35d5c1" stroke-width="2.2" stroke-linejoin="round"/>
+      <text x="70" y="44" fill="#fff" font-size="18" font-weight="800">SVG → STL Web</text>
+      <text x="70" y="70" fill="#bfe9dc" font-size="12">Receives approved traffic</text>
+    </g>
+  </g>
+</svg>

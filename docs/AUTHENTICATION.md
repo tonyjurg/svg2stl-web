@@ -15,13 +15,9 @@ reverse-proxy access-control profiles as IP/CIDR rules.
 
 For actual user authentication, use this flow:
 
-```mermaid
-flowchart LR
-    User["User browser"] -->|"HTTPS"| DSMProxy["DSM reverse proxy"]
-    DSMProxy --> Auth["OAuth2 Proxy"]
-    Auth -->|"OIDC sign-in"| SSO["DSM SSO Server"]
-    Auth -->|"authenticated request"| App["SVG to STL Web"]
-```
+![Authentication flow: the user reaches the DSM reverse proxy over HTTPS,
+which forwards to OAuth2 Proxy. OAuth2 Proxy signs in through DSM SSO Server
+and forwards authenticated requests to SVG to STL Web.](assets/authentication-flow.svg)
 
 This guide uses
 [OAuth2 Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) as the OIDC client.

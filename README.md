@@ -1,6 +1,7 @@
 # SVG to STL Web
 
 [![Verify](https://github.com/tonyjurg/svg2stl-web/actions/workflows/verify.yml/badge.svg)](https://github.com/tonyjurg/svg2stl-web/actions/workflows/verify.yml)
+[![Website](https://img.shields.io/badge/website-GitHub%20Pages-08766d.svg)](https://tonyjurg.github.io/svg2stl-web/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/tonyjurg/svg2stl-web)
 
 A self-hosted web application that converts closed SVG paths into a validated
@@ -9,6 +10,10 @@ SVG artwork itself.
 
 The service is intended for a home or workshop network and can run on an
 x86-64 Synology NAS with Container Manager.
+
+Visit the [project website](https://tonyjurg.github.io/svg2stl-web/) for a
+high-level visual overview, animated output examples, and routes into the
+detailed documentation.
 
 ## Features
 

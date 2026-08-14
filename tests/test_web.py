@@ -26,6 +26,9 @@ def test_home_page_and_health_endpoint():
     assert 'id="show-svg"' in page.text
     assert 'id="show-stl"' in page.text
     assert 'type="module"' in page.text
+    assert 'class="brand-mark"' in page.text
+    assert "https://github.com/tonyjurg/svg2stl-web" in page.text
+    assert "/static/favicon.svg" in page.text
     assert health.json() == {"status": "ok"}
     assert "frame-ancestors 'none'" in page.headers["content-security-policy"]
     assert page.headers["x-content-type-options"] == "nosniff"

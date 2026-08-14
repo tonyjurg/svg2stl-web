@@ -1,18 +1,19 @@
 :root {
-  color: #182126;
-  background: #eef1f2;
+  color: #17302d;
+  background: #f7faf7;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
   letter-spacing: 0;
-  --ink: #182126;
-  --muted: #657176;
-  --line: #cfd7d9;
-  --soft-line: #e2e7e8;
+  --ink: #17302d;
+  --muted: #647975;
+  --line: #d4e1dc;
+  --soft-line: #e2ebe7;
   --paper: #ffffff;
-  --canvas: #f6f8f8;
-  --teal: #08766d;
-  --teal-dark: #075d57;
-  --yellow: #f0c84b;
+  --canvas: #f7faf7;
+  --teal: #087c70;
+  --teal-dark: #08675e;
+  --teal-mid: #10a18f;
+  --yellow: #eeb54a;
 }
 
 * { box-sizing: border-box; }
@@ -26,6 +27,7 @@ body {
 }
 
 button, input { font: inherit; letter-spacing: 0; }
+a { color: inherit; }
 button, label, input[type="range"] { -webkit-tap-highlight-color: transparent; }
 
 .app-header {
@@ -36,8 +38,30 @@ button, label, input[type="range"] { -webkit-tap-highlight-color: transparent; }
   justify-content: space-between;
   gap: 24px;
   border-bottom: 1px solid var(--line);
-  background: var(--paper);
+  background:
+    radial-gradient(circle at 88% 15%, rgba(49, 201, 180, 0.16), transparent 27%),
+    linear-gradient(135deg, #fbfdfb 0%, #f1f8f4 58%, #ecf6f1 100%);
 }
+
+.app-brand {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.brand-copy { min-width: 0; }
+.brand-arrow { padding: 0 3px; color: var(--teal-mid); }
 
 .kicker, .result-label {
   margin: 0 0 4px;
@@ -47,7 +71,13 @@ button, label, input[type="range"] { -webkit-tap-highlight-color: transparent; }
 }
 
 h1, h2, p { margin-top: 0; }
-h1 { margin-bottom: 0; font-size: 28px; line-height: 1.05; font-weight: 760; }
+h1 { margin-bottom: 0; font-size: 28px; line-height: 1.05; font-weight: 820; letter-spacing: 0.01em; }
+
+.app-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
 
 .service-state {
   display: inline-flex;
@@ -301,6 +331,20 @@ h1 { margin-bottom: 0; font-size: 28px; line-height: 1.05; font-weight: 760; }
   gap: 12px;
 }
 
+.source-link {
+  padding: 9px 13px;
+  border: 1px solid #adc4bc;
+  border-radius: 6px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.68);
+  font-size: 12px;
+  font-weight: 720;
+  text-decoration: none;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.source-link:hover { border-color: var(--teal); background: #fff; }
+
 .preview-tools p {
   margin: 0;
   color: var(--muted);
@@ -440,6 +484,10 @@ footer {
   font-size: 10px;
 }
 
+.footer-assurances { display: flex; align-items: center; gap: 24px; }
+footer a { color: #36514d; font-weight: 700; text-decoration: none; }
+footer a:hover { color: var(--teal); text-decoration: underline; }
+
 [hidden] { display: none !important; }
 :focus-visible { outline: 3px solid #78b9b2; outline-offset: 2px; }
 
@@ -451,9 +499,13 @@ footer {
 
 @media (max-width: 560px) {
   .app-header, .control-pane, .preview-pane { padding-left: 20px; padding-right: 20px; }
-  .app-header { min-height: 82px; }
+  .app-header { min-height: 82px; gap: 14px; }
+  .brand-mark { width: 36px; height: 36px; flex-basis: 36px; }
+  .kicker { font-size: 9px; }
   h1 { font-size: 24px; }
-  .service-state { font-size: 11px; }
+  .service-state { display: none; }
+  .app-header-actions { gap: 8px; }
+  .source-link { padding: 8px 10px; }
   .field-grid { grid-template-columns: 1fr; }
   .preview-stage { min-height: 290px; }
   .preview-tools { flex-wrap: wrap; }
@@ -462,5 +514,6 @@ footer {
   .mesh-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .mesh-metrics div:nth-child(2) { border-right: 0; }
   .mesh-metrics div:nth-child(-n + 2) { border-bottom: 1px solid var(--soft-line); }
-  footer { padding: 12px 20px; align-items: flex-start; flex-direction: column; gap: 4px; }
+  footer { padding: 12px 20px; align-items: flex-start; flex-direction: column; gap: 8px; }
+  .footer-assurances { align-items: flex-start; flex-direction: column; gap: 4px; }
 }

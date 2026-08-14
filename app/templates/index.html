@@ -5,18 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light">
     <title>SVG to STL</title>
+    <link rel="icon" href="{{ url_for('static', path='/favicon.svg') }}" type="image/svg+xml">
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
     <script type="module" src="{{ url_for('static', path='/app.js') }}"></script>
   </head>
   <body>
     <header class="app-header">
-      <div>
-        <p class="kicker">STENCIL WORKSHOP</p>
-        <h1>SVG to STL</h1>
+      <div class="app-brand">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 9h17l9 8v14H16l-9-8Z"/><path d="m7 9 9 8h17M16 17v14"/></svg>
+        <div class="brand-copy">
+          <p class="kicker">SELF-HOSTED STENCIL WORKSHOP</p>
+          <h1>SVG <span class="brand-arrow">&rarr;</span> STL</h1>
+        </div>
       </div>
-      <div class="service-state" aria-label="Service available">
-        <span class="state-dot" aria-hidden="true"></span>
-        Local service
+      <div class="app-header-actions">
+        <div class="service-state" aria-label="Service available">
+          <span class="state-dot" aria-hidden="true"></span>
+          Local service
+        </div>
+        <a class="source-link" href="https://github.com/tonyjurg/svg2stl-web" target="_blank" rel="noopener noreferrer">
+          GitHub <span aria-hidden="true">&nearr;</span>
+        </a>
       </div>
     </header>
 
@@ -157,8 +166,11 @@
     </main>
 
     <footer>
-      <span>Files are deleted after conversion</span>
-      <span>Validated before download</span>
+      <div class="footer-assurances">
+        <span>Files are deleted after conversion</span>
+        <span>Validated before download</span>
+      </div>
+      <a href="https://github.com/tonyjurg/svg2stl-web" target="_blank" rel="noopener noreferrer">Open source on GitHub <span aria-hidden="true">&rarr;</span></a>
     </footer>
   </body>
 </html>

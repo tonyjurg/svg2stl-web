@@ -9,7 +9,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # The gmsh wheel bundles Gmsh itself but dynamically links these small runtime
 # libraries. No desktop session is used by the web application.
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y libgl1 libglu1-mesa libgomp1 \
+    && apt-get install --no-install-recommends -y \
+        libgl1 \
+        libglu1-mesa \
+        libgomp1 \
+        libxcursor1 \
+        libxft2 \
+        libxinerama1 \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --system --gid 10001 svg2stl \
     && useradd --system --uid 10001 --gid svg2stl --home-dir /app svg2stl

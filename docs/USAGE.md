@@ -3,6 +3,18 @@
 This guide explains how the two output modes interpret SVG paths, how to
 prepare artwork, and how each setting affects the resulting STL.
 
+## Keep artwork local
+
+This application is designed as a private alternative to an online conversion
+tool. Your browser uploads the SVG only to the self-hosted server you opened;
+the server does not forward it to a cloud converter or analytics service. The
+generated STL returns directly to the same browser, and temporary server files
+are removed after the response.
+
+For that promise to remain meaningful, keep the deployment on a trusted local
+network or secure remote access with HTTPS and authentication. See the
+[security policy](SECURITY.md#artwork-privacy) for the complete trust model.
+
 ## Choose an output mode
 
 ### Stencil

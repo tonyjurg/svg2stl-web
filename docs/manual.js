@@ -6,6 +6,7 @@ const guides = {
   api: { file: "API.md", label: "HTTP API" },
   development: { file: "DEVELOPMENT.md", label: "Development" },
   security: { file: "SECURITY.md", label: "Security policy" },
+  licenses: { file: "LICENSES.md", label: "Licenses and components" },
 };
 
 const article = document.querySelector("#manual-article");

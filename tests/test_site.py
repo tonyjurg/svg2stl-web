@@ -44,6 +44,7 @@ def test_pages_site_links_to_every_detailed_guide() -> None:
         "api",
         "development",
         "security",
+        "licenses",
     ):
         assert f"manual.html?guide={guide}" in page
 
@@ -66,7 +67,9 @@ def test_pages_site_uses_real_screenshots_and_reduced_motion() -> None:
     page = (SITE / "index.html").read_text(encoding="utf-8")
     styles = (SITE / "styles.css").read_text(encoding="utf-8")
 
-    assert "Create precise stencils from your SVG artwork" in page
+    assert "Create precise stencils. Keep your artwork private." in page
+    assert "Your design never needs an online converter" in page
+    assert "No third-party conversion upload" in page
     assert "Stencil is the main event" in page
     assert "Design stencil bridges" in page
     for screenshot in (
@@ -92,12 +95,16 @@ def test_integrated_manual_can_load_every_markdown_guide() -> None:
         "API.md",
         "DEVELOPMENT.md",
         "SECURITY.md",
+        "LICENSES.md",
     ):
         assert filename in script
         assert (SITE / filename).is_file()
     assert 'id="manual-article"' in manual
     assert (SITE / "SECURITY.md").read_text(encoding="utf-8") == (
         ROOT / "SECURITY.md"
+    ).read_text(encoding="utf-8")
+    assert (SITE / "LICENSES.md").read_text(encoding="utf-8") == (
+        ROOT / "THIRD_PARTY_NOTICES.md"
     ).read_text(encoding="utf-8")
 
 

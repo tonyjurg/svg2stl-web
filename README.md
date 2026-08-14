@@ -8,6 +8,11 @@ A self-hosted web application that converts closed SVG paths into a validated
 STL. It can create either a stencil plate with the artwork cut out or the solid
 SVG artwork itself.
 
+The central benefit of self-hosting is artwork privacy: the SVG is processed on
+your own machine instead of being uploaded to an online conversion provider.
+The application has no cloud conversion, analytics, telemetry, or CDN runtime
+dependency, and temporary SVG and STL files are deleted after the response.
+
 The service is intended for a home or workshop network and can run on an
 x86-64 Synology NAS with Container Manager.
 
@@ -17,6 +22,7 @@ detailed documentation.
 
 ## Features
 
+- Local conversion keeps artwork away from third-party online converters
 - Browser-based SVG preview with zoom, pan, and fit controls
 - Interactive STL preview with rotate, pan, zoom, and SVG/STL switching
 - Stencil plate and solid shape output modes

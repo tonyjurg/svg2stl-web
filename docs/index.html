@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Turn closed SVG paths into validated, 3D-printable stencil plates or solid shapes on your own machine.">
+    <meta name="description" content="Create validated, 3D-printable stencils from SVG artwork without sending your designs to an online conversion service.">
     <meta name="theme-color" content="#f7faf7">
     <title>SVG to STL | Create printable stencils from SVG artwork</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -21,6 +21,7 @@
       <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span><span class="sr-only">Open navigation</span></button>
       <nav class="site-nav" id="site-nav" aria-label="Main navigation">
         <a href="#workflow">How it works</a>
+        <a href="#privacy">Local privacy</a>
         <a href="#outputs">Real results</a>
         <a href="#prepare">Prepare artwork</a>
         <a href="manual.html">Documentation</a>
@@ -33,8 +34,8 @@
         <div class="hero-copy">
           <p class="eyebrow"><span></span> A self-hosted stencil workshop</p>
           <p class="hero-badge">SVG artwork &rarr; printable stencil plate</p>
-          <h1>Create precise stencils from your SVG artwork.</h1>
-          <p class="hero-lead">Upload closed vector paths, choose the finished height and border, then generate a validated STL plate with your artwork cut all the way through. Preview the actual mesh in 3D before it reaches your slicer.</p>
+          <h1>Create precise stencils. Keep your artwork private.</h1>
+          <p class="hero-lead">Unlike an online converter, this self-hosted service keeps your SVG on your own machine and network. Choose the finished height and border, generate a validated stencil plate locally, and preview the actual mesh before it reaches your slicer.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="manual.html?guide=deployment#synology-container-manager">Install on Synology <span>&rarr;</span></a>
             <a class="button button-secondary" href="manual.html?guide=usage">Read the user guide <span>&rarr;</span></a>
@@ -50,6 +51,26 @@
       </section>
 
       <section class="purpose-strip" aria-label="Common stencil uses"><strong>Made for repeatable marking</strong><span>Workshop labels</span><i></i><span>Paint masks</span><i></i><span>Craft templates</span><i></i><span>Signs and symbols</span></section>
+
+      <section class="section privacy-section" id="privacy">
+        <div class="privacy-layout">
+          <div class="privacy-copy">
+            <p class="eyebrow"><span></span> Your design never needs an online converter</p>
+            <h2>Artwork stays on the machine you control.</h2>
+            <p>Your browser sends the SVG only to your self-hosted SVG to STL instance. Conversion happens in temporary storage on that host, the result returns directly to your browser, and the working files are deleted after the response.</p>
+            <p>No cloud conversion API, analytics service, CDN, or telemetry endpoint receives your artwork. Keep the service on a trusted LAN—or protect remote access with HTTPS and authentication—to preserve that boundary.</p>
+            <a class="text-link" href="manual.html?guide=security#artwork-privacy">Read the privacy model &rarr;</a>
+          </div>
+          <div class="privacy-proof" aria-label="Local artwork processing path">
+            <div><span>01</span><strong>Your browser</strong><p>Loads the SVG preview locally.</p></div>
+            <i aria-hidden="true">&rarr;</i>
+            <div><span>02</span><strong>Your Docker host</strong><p>Converts in temporary storage.</p></div>
+            <i aria-hidden="true">&rarr;</i>
+            <div><span>03</span><strong>Your browser</strong><p>Receives the validated STL.</p></div>
+            <p class="privacy-boundary"><strong>LOCAL TRUST BOUNDARY</strong><span>No third-party conversion upload</span></p>
+          </div>
+        </div>
+      </section>
 
       <section class="section stencil-purpose">
         <div class="purpose-copy">
@@ -116,12 +137,13 @@
           <a href="manual.html?guide=api"><span class="doc-code">05 / API</span><strong>Automate the conversion endpoint</strong><i>&rarr;</i></a>
           <a href="manual.html?guide=development"><span class="doc-code">06 / DEV</span><strong>Understand architecture and contribute</strong><i>&rarr;</i></a>
           <a href="manual.html?guide=security"><span class="doc-code">07 / SAFE</span><strong>Review reporting and deployment security</strong><i>&rarr;</i></a>
+          <a href="manual.html?guide=licenses"><span class="doc-code">08 / LEGAL</span><strong>Understand every included component and its license</strong><i>&rarr;</i></a>
         </div>
       </section>
 
       <section class="closing"><p>YOUR ARTWORK. YOUR MACHINE. YOUR STENCIL.</p><h2>Turn the next SVG into a tool you can hold.</h2><div><a class="button button-primary" href="https://github.com/tonyjurg/svg2stl-web">Get SVG to STL <span>&nearr;</span></a><a class="text-link" href="manual.html">Explore the complete manual &rarr;</a></div></section>
     </main>
 
-    <footer><a class="brand footer-brand" href="#top"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 9h17l9 8v14H16l-9-8Z"/><path d="m7 9 9 8h17M16 17v14"/></svg><span>SVG <span class="brand-arrow">&rarr;</span> STL</span></a><p>Self-hosted SVG conversion for validated, printable stencils.</p><nav aria-label="Footer navigation"><a href="manual.html">Manual</a><a href="https://github.com/tonyjurg/svg2stl-web">GitHub</a><a href="https://github.com/tonyjurg/svg2stl-web/issues">Issues</a><a href="https://github.com/tonyjurg/svg2stl-web/blob/main/LICENSE">MIT License</a></nav><span>&copy; <span id="year">2026</span></span></footer>
+    <footer><a class="brand footer-brand" href="#top"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 9h17l9 8v14H16l-9-8Z"/><path d="m7 9 9 8h17M16 17v14"/></svg><span>SVG <span class="brand-arrow">&rarr;</span> STL</span></a><p>Self-hosted SVG conversion for validated, printable stencils.</p><nav aria-label="Footer navigation"><a href="manual.html">Manual</a><a href="https://github.com/tonyjurg/svg2stl-web">GitHub</a><a href="https://github.com/tonyjurg/svg2stl-web/issues">Issues</a><a href="manual.html?guide=licenses">Licenses</a></nav><span>&copy; <span id="year">2026</span></span></footer>
   </body>
 </html>

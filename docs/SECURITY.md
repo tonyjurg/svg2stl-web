@@ -6,6 +6,25 @@ Security fixes are applied to the current `main` branch. Published releases,
 when available, state whether they include a security fix. Older commits and
 locally modified deployments are not maintained separately.
 
+## Artwork privacy
+
+Keeping artwork local is a primary reason to self-host this application. The
+browser sends an SVG only to the SVG to STL instance that the user opened. The
+server processes it in a per-request temporary directory, returns the validated
+STL directly to that browser, and deletes the working directory after the
+response. The bundled STL preview also runs locally in the browser.
+
+The application contains no cloud conversion integration, external analytics,
+telemetry, advertising, or CDN-hosted runtime library. It does not intentionally
+forward uploaded SVG or generated STL data to a third party.
+
+This privacy boundary depends on the deployment. Run the service on a trusted
+LAN when possible. If remote access is required, use HTTPS, authentication, and
+firewall rules; keep the host and reverse proxy updated; and do not install
+untrusted browser extensions or monitoring proxies that can read uploads. A
+misconfigured, compromised, or publicly exposed host cannot provide the same
+assurance as a properly secured local deployment.
+
 ## Reporting a vulnerability
 
 Do not open a public issue containing exploit details, credentials, private SVG

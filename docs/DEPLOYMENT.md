@@ -112,6 +112,12 @@ STL files live under the container's temporary filesystem and are deleted after
 the download response. There is therefore no application-data volume to back
 up.
 
+No uploaded artwork or generated mesh is sent to an external conversion,
+analytics, telemetry, or CDN service. The upload travels only between the
+user's browser and this deployment. Keep the host on a trusted LAN, or apply
+the HTTPS and authentication controls below, to retain that local privacy
+boundary.
+
 Back up the repository or keep it in GitHub. User uploads are intentionally not
 recoverable.
 

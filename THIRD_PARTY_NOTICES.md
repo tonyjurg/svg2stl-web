@@ -17,6 +17,9 @@ licenses. In particular:
   [trimesh](https://github.com/mikedh/trimesh),
   [NumPy](https://github.com/numpy/numpy), and the remaining Python packages
   retain the licenses published with their distributions.
+- [Three.js](https://github.com/mrdoob/three.js), version 0.185.1, is bundled
+  for local STL rendering and is distributed under the MIT License. Its
+  license text is retained in `app/static/THREE-LICENSE.txt`.
 - The optional authentication example uses
   [OAuth2 Proxy](https://github.com/oauth2-proxy/oauth2-proxy), which is
   distributed under the MIT License.

@@ -1,10 +1,21 @@
+import { createStlViewer } from "./stl-viewer.js";
+
 const fileInput = document.querySelector("#svg-file");
 const dropZone = document.querySelector("#drop-zone");
 const dropTitle = document.querySelector("#drop-title");
 const dropDetail = document.querySelector("#drop-detail");
+const previewStage = document.querySelector("#preview-stage");
+const previewTools = document.querySelector("#preview-tools");
 const preview = document.querySelector("#svg-preview");
+const stlPreview = document.querySelector("#stl-preview");
 const emptyPreview = document.querySelector("#empty-preview");
 const previewStatus = document.querySelector("#preview-status");
+const previewHelp = document.querySelector("#preview-help");
+const showSvgButton = document.querySelector("#show-svg");
+const showStlButton = document.querySelector("#show-stl");
+const zoomOutButton = document.querySelector("#zoom-out");
+const zoomInButton = document.querySelector("#zoom-in");
+const resetViewButton = document.querySelector("#reset-view");
 const clearButton = document.querySelector("#clear-file");
 const form = document.querySelector("#conversion-form");
 const convertButton = document.querySelector("#convert-button");
@@ -19,9 +30,18 @@ const resultPanel = document.querySelector("#result-panel");
 const resultName = document.querySelector("#result-name");
 const downloadLink = document.querySelector("#download-link");
 
+const SVG_MIN_SCALE = 0.25;
+const SVG_MAX_SCALE = 12;
+
 let selectedFile = null;
 let previewUrl = null;
 let downloadUrl = null;
+let stlBlob = null;
+let stlViewer = null;
+let stlGeneration = 0;
+let activePreview = "svg";
+let svgView = { scale: 1, x: 0, y: 0 };
+let panState = null;
 
 function selectedMode() {
   return document.querySelector('input[name="output_mode"]:checked').value;
@@ -47,11 +67,69 @@ function revokeUrl(url) {
   if (url) URL.revokeObjectURL(url);
 }
 
+function setPreviewButtons(mode) {
+  const showingSvg = mode === "svg";
+  showSvgButton.classList.toggle("is-active", showingSvg);
+  showSvgButton.setAttribute("aria-pressed", String(showingSvg));
+  showStlButton.classList.toggle("is-active", !showingSvg);
+  showStlButton.setAttribute("aria-pressed", String(!showingSvg));
+}
+
+function activatePreview(mode) {
+  activePreview = mode;
+  const showingSvg = mode === "svg";
+  preview.hidden = !showingSvg || !selectedFile;
+  stlPreview.hidden = showingSvg;
+  emptyPreview.hidden = Boolean(selectedFile);
+  previewStage.classList.toggle("is-svg-view", showingSvg && Boolean(selectedFile));
+  previewStage.classList.toggle("is-stl-view", !showingSvg);
+  previewHelp.textContent = showingSvg
+    ? "Scroll to zoom · drag to pan"
+    : "Drag to rotate · right-drag to pan · scroll to zoom";
+  setPreviewButtons(mode);
+}
+
+function applySvgView() {
+  preview.style.transform = `translate3d(${svgView.x}px, ${svgView.y}px, 0) scale(${svgView.scale})`;
+}
+
+function resetSvgView() {
+  svgView = { scale: 1, x: 0, y: 0 };
+  applySvgView();
+}
+
+function zoomSvg(factor, clientX = null, clientY = null) {
+  const nextScale = Math.min(
+    SVG_MAX_SCALE,
+    Math.max(SVG_MIN_SCALE, svgView.scale * factor),
+  );
+  if (nextScale === svgView.scale) return;
+
+  const bounds = previewStage.getBoundingClientRect();
+  const anchorX = (clientX ?? bounds.left + bounds.width / 2) - bounds.left - bounds.width / 2;
+  const anchorY = (clientY ?? bounds.top + bounds.height / 2) - bounds.top - bounds.height / 2;
+  const ratio = nextScale / svgView.scale;
+  svgView.x = anchorX - (anchorX - svgView.x) * ratio;
+  svgView.y = anchorY - (anchorY - svgView.y) * ratio;
+  svgView.scale = nextScale;
+  applySvgView();
+}
+
+function disposeStlViewer() {
+  stlGeneration += 1;
+  stlViewer?.dispose();
+  stlViewer = null;
+}
+
 function clearResult() {
   revokeUrl(downloadUrl);
   downloadUrl = null;
+  stlBlob = null;
   downloadLink.removeAttribute("href");
   resultPanel.hidden = true;
+  showStlButton.disabled = true;
+  disposeStlViewer();
+  activatePreview("svg");
 }
 
 function showError(message) {
@@ -62,6 +140,45 @@ function showError(message) {
 function clearError() {
   errorMessage.textContent = "";
   errorMessage.hidden = true;
+}
+
+async function showPreviewMode(mode) {
+  if (mode === "svg") {
+    activatePreview("svg");
+    previewStatus.textContent = selectedFile ? selectedFile.name : "Awaiting artwork";
+    return;
+  }
+  if (!stlBlob) return;
+
+  activatePreview("stl");
+  if (stlViewer) {
+    stlViewer.resize();
+    previewStatus.textContent = "Validated STL preview";
+    return;
+  }
+
+  const generation = stlGeneration;
+  const blob = stlBlob;
+  showStlButton.disabled = true;
+  previewStatus.textContent = "Loading 3D preview";
+  try {
+    const viewer = createStlViewer(stlPreview);
+    await viewer.load(blob);
+    if (generation !== stlGeneration || blob !== stlBlob) {
+      viewer.dispose();
+      return;
+    }
+    stlViewer = viewer;
+    previewStatus.textContent = "Validated STL preview";
+  } catch (error) {
+    if (generation !== stlGeneration) return;
+    stlPreview.replaceChildren();
+    activatePreview("svg");
+    showError(error.message || "The STL was created, but its 3D preview could not be shown.");
+    previewStatus.textContent = "STL ready · 3D preview unavailable";
+  } finally {
+    if (generation === stlGeneration) showStlButton.disabled = false;
+  }
 }
 
 function selectFile(file) {
@@ -76,14 +193,15 @@ function selectFile(file) {
   revokeUrl(previewUrl);
   previewUrl = URL.createObjectURL(file);
   preview.src = previewUrl;
-  preview.hidden = false;
-  emptyPreview.hidden = true;
+  previewTools.hidden = false;
   clearButton.hidden = false;
   dropZone.classList.add("has-file");
   dropTitle.textContent = file.name;
   dropDetail.textContent = formatBytes(file.size);
   previewStatus.textContent = file.name;
   convertButton.disabled = false;
+  resetSvgView();
+  activatePreview("svg");
 }
 
 function resetFile() {
@@ -92,8 +210,7 @@ function resetFile() {
   revokeUrl(previewUrl);
   previewUrl = null;
   preview.removeAttribute("src");
-  preview.hidden = true;
-  emptyPreview.hidden = false;
+  previewTools.hidden = true;
   clearButton.hidden = true;
   dropZone.classList.remove("has-file");
   dropTitle.textContent = "Choose an SVG";
@@ -102,6 +219,8 @@ function resetFile() {
   convertButton.disabled = true;
   clearError();
   clearResult();
+  resetSvgView();
+  emptyPreview.hidden = false;
 }
 
 function responseFilename(response) {
@@ -126,6 +245,7 @@ function metric(response, name, fallback = "—") {
 
 function showResult(response, blob) {
   clearResult();
+  stlBlob = blob;
   downloadUrl = URL.createObjectURL(blob);
   const filename = responseFilename(response);
   downloadLink.href = downloadUrl;
@@ -144,12 +264,63 @@ function showResult(response, blob) {
   document.querySelector("#metric-winding").textContent =
     metric(response, "x-mesh-winding") === "true" ? "Passed" : "Failed";
   resultPanel.hidden = false;
+  showStlButton.disabled = false;
   resultPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
 fileInput.addEventListener("change", () => selectFile(fileInput.files[0]));
 clearButton.addEventListener("click", resetFile);
 detailInput.addEventListener("input", () => { detailOutput.value = detailInput.value; });
+showSvgButton.addEventListener("click", () => showPreviewMode("svg"));
+showStlButton.addEventListener("click", () => showPreviewMode("stl"));
+
+zoomOutButton.addEventListener("click", () => {
+  if (activePreview === "svg") zoomSvg(0.8);
+  else stlViewer?.zoom(0.8);
+});
+zoomInButton.addEventListener("click", () => {
+  if (activePreview === "svg") zoomSvg(1.25);
+  else stlViewer?.zoom(1.25);
+});
+resetViewButton.addEventListener("click", () => {
+  if (activePreview === "svg") resetSvgView();
+  else stlViewer?.reset();
+});
+
+previewStage.addEventListener("wheel", (event) => {
+  if (activePreview !== "svg" || !selectedFile) return;
+  event.preventDefault();
+  zoomSvg(Math.exp(-event.deltaY * 0.0015), event.clientX, event.clientY);
+}, { passive: false });
+
+previewStage.addEventListener("pointerdown", (event) => {
+  if (activePreview !== "svg" || !selectedFile || event.button !== 0) return;
+  panState = { pointerId: event.pointerId, x: event.clientX, y: event.clientY };
+  previewStage.setPointerCapture(event.pointerId);
+  previewStage.classList.add("is-panning");
+});
+
+previewStage.addEventListener("pointermove", (event) => {
+  if (!panState || event.pointerId !== panState.pointerId) return;
+  svgView.x += event.clientX - panState.x;
+  svgView.y += event.clientY - panState.y;
+  panState.x = event.clientX;
+  panState.y = event.clientY;
+  applySvgView();
+});
+
+function finishPan(event) {
+  if (!panState || event.pointerId !== panState.pointerId) return;
+  if (previewStage.hasPointerCapture(event.pointerId)) {
+    previewStage.releasePointerCapture(event.pointerId);
+  }
+  panState = null;
+  previewStage.classList.remove("is-panning");
+}
+
+previewStage.addEventListener("pointerup", finishPan);
+previewStage.addEventListener("pointercancel", finishPan);
+
 for (const modeInput of modeInputs) {
   modeInput.addEventListener("change", updateMode);
 }
@@ -217,4 +388,5 @@ updateMode();
 window.addEventListener("beforeunload", () => {
   revokeUrl(previewUrl);
   revokeUrl(downloadUrl);
+  disposeStlViewer();
 });

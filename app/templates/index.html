@@ -6,7 +6,7 @@
     <meta name="color-scheme" content="light">
     <title>SVG to STL</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
-    <script src="{{ url_for('static', path='/app.js') }}" defer></script>
+    <script type="module" src="{{ url_for('static', path='/app.js') }}"></script>
   </head>
   <body>
     <header class="app-header">
@@ -112,12 +112,26 @@
           <button id="clear-file" class="icon-button" type="button" title="Clear selected SVG" aria-label="Clear selected SVG" hidden>×</button>
         </div>
 
+        <div class="preview-tools" id="preview-tools" hidden>
+          <div class="preview-modes" role="group" aria-label="Preview type">
+            <button id="show-svg" class="preview-mode is-active" type="button" aria-pressed="true">SVG</button>
+            <button id="show-stl" class="preview-mode" type="button" aria-pressed="false" disabled>STL</button>
+          </div>
+          <p id="preview-help">Scroll to zoom · drag to pan</p>
+          <div class="view-controls" role="group" aria-label="Preview view controls">
+            <button id="zoom-out" type="button" title="Zoom out" aria-label="Zoom out">&minus;</button>
+            <button id="reset-view" type="button" title="Fit preview to window">Fit</button>
+            <button id="zoom-in" type="button" title="Zoom in" aria-label="Zoom in">+</button>
+          </div>
+        </div>
+
         <div class="preview-stage" id="preview-stage">
           <div class="empty-preview" id="empty-preview">
             <span class="empty-frame" aria-hidden="true"></span>
             <p>No SVG selected</p>
           </div>
-          <img id="svg-preview" alt="Selected SVG artwork preview" hidden>
+          <img id="svg-preview" alt="Selected SVG artwork preview" draggable="false" hidden>
+          <div id="stl-preview" class="stl-preview" hidden></div>
         </div>
 
         <div class="result-panel" id="result-panel" hidden>

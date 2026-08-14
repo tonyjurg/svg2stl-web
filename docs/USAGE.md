@@ -91,6 +91,25 @@ as independent, non-overlapping closed contours that match the chosen mode.
 
 ## Reading the result
 
+### Preview controls
+
+After choosing an SVG, use the buttons above the preview or interact with the
+artwork directly:
+
+- scroll over the SVG or use **+** and **−** to zoom;
+- drag the SVG to pan, and select **Fit** to restore the initial view;
+- after a successful conversion, select **STL** to switch to the generated
+  three-dimensional mesh;
+- drag the STL to rotate it, right-drag to pan it, and scroll to zoom it;
+- use **SVG** and **STL** to move between the source and generated previews.
+
+The STL viewer runs entirely in the browser from files bundled with the
+application. It does not upload the STL again or contact an external service.
+If WebGL is unavailable, the validated STL can still be downloaded and opened
+in a slicer.
+
+### Validation results
+
 The result panel shows:
 
 - **Size:** STL width, height, and thickness in millimetres.

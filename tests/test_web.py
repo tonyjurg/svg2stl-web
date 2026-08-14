@@ -21,9 +21,28 @@ def test_home_page_and_health_endpoint():
     assert "SVG to STL" in page.text
     assert "Create stencil" in page.text
     assert "SVG shape" in page.text
+    assert 'id="show-svg"' in page.text
+    assert 'id="show-stl"' in page.text
+    assert 'type="module"' in page.text
     assert health.json() == {"status": "ok"}
     assert "frame-ancestors 'none'" in page.headers["content-security-policy"]
     assert page.headers["x-content-type-options"] == "nosniff"
+
+
+def test_local_preview_modules_are_served_without_cdn_dependencies():
+    viewer = client.get("/static/stl-viewer.js")
+    three = client.get("/static/three.module.min.js")
+    three_core = client.get("/static/three.core.min.js")
+    loader = client.get("/static/STLLoader.js")
+
+    assert viewer.status_code == 200
+    assert three.status_code == 200
+    assert three_core.status_code == 200
+    assert loader.status_code == 200
+    assert 'from"./three.core.min.js"' in three.text
+    assert 'from "./three.module.min.js"' in viewer.text
+    assert "from './three.module.min.js'" in loader.text
+    assert "https://" not in viewer.text
 
 
 def test_conversion_endpoint_returns_a_valid_stl(tmp_path):

@@ -7,7 +7,7 @@ app/
   converter.py          SVG parsing, Gmsh geometry, and STL validation
   main.py               FastAPI routes, upload limits, and worker lifecycle
   worker.py             One-shot conversion subprocess entry point
-  static/               Browser JavaScript and CSS
+  static/               Browser JavaScript, CSS, and local Three.js modules
   templates/            Jinja2 application page
 examples/
   simple_shapes.svg     Neutral regression and demonstration input
@@ -37,6 +37,12 @@ Gmsh uses process-global state. Running each conversion in a separate worker
 prevents state from leaking between uploads and gives the web process a hard
 timeout boundary. The FastAPI process uses a semaphore to limit how many Gmsh
 workers run concurrently.
+
+The source SVG is previewed as a blob-backed image rather than inserted into
+the document. The STL returned by the conversion endpoint is also retained as
+a browser blob and parsed locally for the optional Three.js preview; it is not
+sent to another endpoint. Three.js, STLLoader, and OrbitControls are pinned and
+served from `app/static`, so the interface has no CDN or internet dependency.
 
 ## Conversion pipeline
 

@@ -12,7 +12,8 @@ x86-64 Synology NAS with Container Manager.
 
 ## Features
 
-- Browser-based SVG upload and preview
+- Browser-based SVG preview with zoom, pan, and fit controls
+- Interactive STL preview with rotate, pan, zoom, and SVG/STL switching
 - Stencil and SVG shape output modes
 - Configurable artwork height, thickness, border, and curve detail
 - Explicit outward face orientation before STL export
@@ -80,7 +81,8 @@ Open <http://localhost:8080> and try
 4. Adjust curve detail if the artwork contains arcs or curves.
 5. Select **Create stencil** or **Create SVG shape**.
 6. Review the reported dimensions and validation results.
-7. Download the STL and inspect it in your slicer before printing.
+7. Select **STL** in the preview to inspect the generated mesh in 3D.
+8. Download the STL and inspect it in your slicer before printing.
 
 Only explicitly closed SVG `<path>` elements are converted. Convert text and
 SVG primitives such as circles and rectangles to paths before uploading.

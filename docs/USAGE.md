@@ -23,9 +23,9 @@ artwork height + (2 x outer border)
 For example, an 80 mm artwork height with a 10 mm border creates a plate that
 is 100 mm high.
 
-### SVG shape
+### Solid shape
 
-SVG shape mode extrudes each closed path as solid material. The border control
+Solid shape mode extrudes each closed path as solid material. The border control
 is disabled because this mode has no surrounding plate.
 
 Use this mode for flat signs, badges, tokens, ornaments, or other objects whose
@@ -133,5 +133,5 @@ circle path and a closed triangle path. It deliberately avoids personal or
 branded artwork.
 
 - Stencil mode creates one rectangular plate with two openings.
-- SVG shape mode creates a circular solid and a triangular solid in one STL.
+- Solid shape mode creates a circular solid and a triangular solid in one STL.
 

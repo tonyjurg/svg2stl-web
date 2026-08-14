@@ -47,15 +47,15 @@
           </div>
 
           <fieldset class="mode-field">
-            <legend>Output</legend>
+            <legend>Output type</legend>
             <div class="segmented-control">
               <label>
                 <input type="radio" name="output_mode" value="stencil" checked>
-                <span>Stencil</span>
+                <span>Stencil plate</span>
               </label>
               <label>
                 <input type="radio" name="output_mode" value="shape">
-                <span>SVG shape</span>
+                <span>Solid shape</span>
               </label>
             </div>
           </fieldset>
@@ -96,7 +96,7 @@
           <div id="error-message" class="message error-message" role="alert" hidden></div>
 
           <button id="convert-button" class="primary-button" type="submit" disabled>
-            <span class="button-label">Create stencil</span>
+            <span class="button-label">Create stencil plate</span>
             <span class="button-progress" aria-hidden="true"></span>
           </button>
         </form>
@@ -114,8 +114,8 @@
 
         <div class="preview-tools" id="preview-tools" hidden>
           <div class="preview-modes" role="group" aria-label="Preview type">
-            <button id="show-svg" class="preview-mode is-active" type="button" aria-pressed="true">SVG</button>
-            <button id="show-stl" class="preview-mode" type="button" aria-pressed="false" disabled>STL</button>
+            <button id="show-svg" class="preview-mode is-active" type="button" aria-pressed="true">Source SVG</button>
+            <button id="show-stl" class="preview-mode" type="button" aria-pressed="false" disabled>Generated STL</button>
           </div>
           <p id="preview-help">Scroll to zoom · drag to pan</p>
           <div class="view-controls" role="group" aria-label="Preview view controls">
@@ -137,7 +137,7 @@
         <div class="result-panel" id="result-panel" hidden>
           <div class="result-heading">
             <div>
-              <p class="result-label">VALIDATED STL</p>
+              <p class="result-label" id="result-label">VALIDATED STL</p>
               <h2 id="result-name">Stencil ready</h2>
             </div>
             <span class="validation-mark" aria-label="Validation passed">✓</span>
@@ -149,8 +149,8 @@
             <div><dt>Winding</dt><dd id="metric-winding">—</dd></div>
           </dl>
           <a id="download-link" class="download-button" download>
-            <span aria-hidden="true">↓</span>
-            Download STL
+            <span class="download-icon" aria-hidden="true">↓</span>
+            <span id="download-text">Download STL</span>
           </a>
         </div>
       </section>

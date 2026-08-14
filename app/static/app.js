@@ -27,8 +27,10 @@ const borderField = document.querySelector("#border-field");
 const borderInput = document.querySelector("#border-mm");
 const errorMessage = document.querySelector("#error-message");
 const resultPanel = document.querySelector("#result-panel");
+const resultLabel = document.querySelector("#result-label");
 const resultName = document.querySelector("#result-name");
 const downloadLink = document.querySelector("#download-link");
+const downloadText = document.querySelector("#download-text");
 
 const SVG_MIN_SCALE = 0.25;
 const SVG_MAX_SCALE = 12;
@@ -39,6 +41,7 @@ let downloadUrl = null;
 let stlBlob = null;
 let stlViewer = null;
 let stlGeneration = 0;
+let resultMode = null;
 let activePreview = "svg";
 let svgView = { scale: 1, x: 0, y: 0 };
 let panState = null;
@@ -47,14 +50,24 @@ function selectedMode() {
   return document.querySelector('input[name="output_mode"]:checked').value;
 }
 
+function modeName(mode) {
+  return mode === "stencil" ? "Stencil plate" : "Solid shape";
+}
+
+function sourceStatus() {
+  return selectedFile
+    ? `Source SVG · ${modeName(selectedMode())} selected`
+    : "Awaiting artwork";
+}
+
 function updateMode() {
   const isStencil = selectedMode() === "stencil";
   borderInput.disabled = !isStencil;
   borderField.classList.toggle("is-disabled", !isStencil);
   borderField.setAttribute("aria-disabled", String(!isStencil));
-  buttonLabel.textContent = isStencil ? "Create stencil" : "Create SVG shape";
-  previewStatus.textContent = selectedFile ? selectedFile.name : "Awaiting artwork";
+  buttonLabel.textContent = isStencil ? "Create stencil plate" : "Create solid shape";
   clearResult();
+  previewStatus.textContent = sourceStatus();
 }
 
 function formatBytes(bytes) {
@@ -117,19 +130,28 @@ function zoomSvg(factor, clientX = null, clientY = null) {
 
 function disposeStlViewer() {
   stlGeneration += 1;
-  stlViewer?.dispose();
+  const viewer = stlViewer;
   stlViewer = null;
+  try {
+    viewer?.dispose();
+  } catch (error) {
+    // A graphics-driver cleanup error must never block changing output mode.
+    console.warn("Could not fully dispose the STL preview", error);
+  } finally {
+    stlPreview.replaceChildren();
+  }
 }
 
 function clearResult() {
   revokeUrl(downloadUrl);
   downloadUrl = null;
   stlBlob = null;
+  resultMode = null;
   downloadLink.removeAttribute("href");
   resultPanel.hidden = true;
   showStlButton.disabled = true;
-  disposeStlViewer();
   activatePreview("svg");
+  disposeStlViewer();
 }
 
 function showError(message) {
@@ -145,7 +167,7 @@ function clearError() {
 async function showPreviewMode(mode) {
   if (mode === "svg") {
     activatePreview("svg");
-    previewStatus.textContent = selectedFile ? selectedFile.name : "Awaiting artwork";
+    previewStatus.textContent = sourceStatus();
     return;
   }
   if (!stlBlob) return;
@@ -153,7 +175,7 @@ async function showPreviewMode(mode) {
   activatePreview("stl");
   if (stlViewer) {
     stlViewer.resize();
-    previewStatus.textContent = "Validated STL preview";
+    previewStatus.textContent = `${modeName(resultMode)} STL preview`;
     return;
   }
 
@@ -169,13 +191,13 @@ async function showPreviewMode(mode) {
       return;
     }
     stlViewer = viewer;
-    previewStatus.textContent = "Validated STL preview";
+    previewStatus.textContent = `${modeName(resultMode)} STL preview`;
   } catch (error) {
     if (generation !== stlGeneration) return;
     stlPreview.replaceChildren();
     activatePreview("svg");
     showError(error.message || "The STL was created, but its 3D preview could not be shown.");
-    previewStatus.textContent = "STL ready · 3D preview unavailable";
+    previewStatus.textContent = `${modeName(resultMode)} STL ready · 3D preview unavailable`;
   } finally {
     if (generation === stlGeneration) showStlButton.disabled = false;
   }
@@ -198,7 +220,7 @@ function selectFile(file) {
   dropZone.classList.add("has-file");
   dropTitle.textContent = file.name;
   dropDetail.textContent = formatBytes(file.size);
-  previewStatus.textContent = file.name;
+  previewStatus.textContent = sourceStatus();
   convertButton.disabled = false;
   resetSvgView();
   activatePreview("svg");
@@ -228,7 +250,8 @@ function responseFilename(response) {
   const utfMatch = disposition.match(/filename\*=utf-8''([^;]+)/i);
   if (utfMatch) return decodeURIComponent(utfMatch[1]);
   const plainMatch = disposition.match(/filename="?([^";]+)"?/i);
-  return plainMatch ? plainMatch[1] : `${selectedMode()}.stl`;
+  const fallback = selectedMode() === "stencil" ? "stencil" : "solid_shape";
+  return plainMatch ? plainMatch[1] : `${fallback}.stl`;
 }
 
 function detailFromResponse(payload) {
@@ -246,11 +269,14 @@ function metric(response, name, fallback = "—") {
 function showResult(response, blob) {
   clearResult();
   stlBlob = blob;
+  resultMode = response.headers.get("x-output-mode") === "shape" ? "shape" : "stencil";
   downloadUrl = URL.createObjectURL(blob);
   const filename = responseFilename(response);
   downloadLink.href = downloadUrl;
   downloadLink.download = filename;
   resultName.textContent = filename;
+  resultLabel.textContent = `VALIDATED ${modeName(resultMode).toUpperCase()} STL`;
+  downloadText.textContent = `Download ${modeName(resultMode).toLowerCase()} STL`;
 
   const width = metric(response, "x-mesh-width");
   const height = metric(response, "x-mesh-height");
@@ -347,15 +373,16 @@ form.addEventListener("submit", async (event) => {
 
   clearError();
   clearResult();
+  const mode = selectedMode();
+  const body = new FormData(form);
+  body.set("output_mode", mode);
+  body.append("svg", selectedFile, selectedFile.name);
+
   convertButton.disabled = true;
   for (const modeInput of modeInputs) modeInput.disabled = true;
   convertButton.classList.add("is-busy");
-  const mode = selectedMode();
-  buttonLabel.textContent = mode === "stencil" ? "Building stencil" : "Building shape";
+  buttonLabel.textContent = mode === "stencil" ? "Building stencil plate" : "Building solid shape";
   previewStatus.textContent = "Converting and validating";
-
-  const body = new FormData(form);
-  body.append("svg", selectedFile, selectedFile.name);
 
   try {
     const response = await fetch("/api/convert", { method: "POST", body });
@@ -371,15 +398,15 @@ form.addEventListener("submit", async (event) => {
 
     const blob = await response.blob();
     showResult(response, blob);
-    previewStatus.textContent = "Validated STL ready";
+    previewStatus.textContent = `${modeName(mode)} STL ready`;
   } catch (error) {
     showError(error.message || "The conversion could not be completed.");
-    previewStatus.textContent = selectedFile.name;
+    previewStatus.textContent = sourceStatus();
   } finally {
     convertButton.disabled = false;
     for (const modeInput of modeInputs) modeInput.disabled = false;
     convertButton.classList.remove("is-busy");
-    buttonLabel.textContent = mode === "stencil" ? "Create stencil" : "Create SVG shape";
+    buttonLabel.textContent = mode === "stencil" ? "Create stencil plate" : "Create solid shape";
   }
 });
 

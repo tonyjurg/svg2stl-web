@@ -38,7 +38,7 @@ Content-Type: multipart/form-data
 
 ```bash
 curl --fail-with-body \
-  --output simple_shapes_shape.stl \
+  --output simple_shapes_solid_shape.stl \
   --form "svg=@examples/simple_shapes.svg;type=image/svg+xml" \
   --form "output_mode=shape" \
   --form "height_mm=80" \
@@ -49,7 +49,7 @@ curl --fail-with-body \
 ```
 
 On success, the response body is a binary STL with media type `model/stl`.
-The download filename ends in `_stencil.stl` or `_shape.stl`.
+The download filename ends in `_stencil.stl` or `_solid_shape.stl`.
 
 ### Validation headers
 

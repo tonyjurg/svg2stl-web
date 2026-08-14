@@ -52,7 +52,7 @@ does not infer that one contour is inside another. Nested artwork, including
 letters with counters, needs to be simplified into supported independent
 cutouts or redesigned with stencil bridges.
 
-## SVG shape mode produces separate pieces
+## Solid shape mode produces separate pieces
 
 Each closed path becomes its own extruded solid. This is expected. Join paths
 in the SVG editor when the parts should be one connected object, or arrange and

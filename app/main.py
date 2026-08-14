@@ -285,7 +285,8 @@ async def convert(
     """Convert one upload and stream the validated STL back to the browser."""
     work_dir = Path(tempfile.mkdtemp(prefix="svg2stl-"))
     input_path = work_dir / "input.svg"
-    output_name = f"{_download_stem(svg.filename)}_{output_mode}.stl"
+    output_suffix = "stencil" if output_mode == "stencil" else "solid_shape"
+    output_name = f"{_download_stem(svg.filename)}_{output_suffix}.stl"
     output_path = work_dir / output_name
 
     try:

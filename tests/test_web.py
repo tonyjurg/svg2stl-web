@@ -19,8 +19,10 @@ def test_home_page_and_health_endpoint():
 
     assert page.status_code == 200
     assert "SVG to STL" in page.text
-    assert "Create stencil" in page.text
-    assert "SVG shape" in page.text
+    assert "Create stencil plate" in page.text
+    assert "Solid shape" in page.text
+    assert "Source SVG" in page.text
+    assert "Generated STL" in page.text
     assert 'id="show-svg"' in page.text
     assert 'id="show-stl"' in page.text
     assert 'type="module"' in page.text
@@ -43,6 +45,16 @@ def test_local_preview_modules_are_served_without_cdn_dependencies():
     assert 'from "./three.module.min.js"' in viewer.text
     assert "from './three.module.min.js'" in loader.text
     assert "https://" not in viewer.text
+
+
+def test_browser_submission_captures_output_mode_before_disabling_controls():
+    script = client.get("/static/app.js")
+
+    assert script.status_code == 200
+    assert 'body.set("output_mode", mode);' in script.text
+    assert script.text.index("const body = new FormData(form);") < script.text.index(
+        "for (const modeInput of modeInputs) modeInput.disabled = true;"
+    )
 
 
 def test_conversion_endpoint_returns_a_valid_stl(tmp_path):
@@ -84,7 +96,7 @@ def test_shape_mode_returns_the_svg_form_without_a_border(tmp_path):
         )
 
     assert response.status_code == 200
-    assert "simple_shapes_shape.stl" in response.headers["content-disposition"]
+    assert "simple_shapes_solid_shape.stl" in response.headers["content-disposition"]
     assert response.headers["x-output-mode"] == "shape"
     assert np.isclose(float(response.headers["x-mesh-height"]), 30.0)
 

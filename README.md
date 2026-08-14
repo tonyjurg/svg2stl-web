@@ -14,7 +14,7 @@ x86-64 Synology NAS with Container Manager.
 
 - Browser-based SVG preview with zoom, pan, and fit controls
 - Interactive STL preview with rotate, pan, zoom, and SVG/STL switching
-- Stencil and SVG shape output modes
+- Stencil plate and solid shape output modes
 - Configurable artwork height, thickness, border, and curve detail
 - Explicit outward face orientation before STL export
 - Validation for watertightness, winding, positive volume, manifold edges,
@@ -27,10 +27,10 @@ x86-64 Synology NAS with Container Manager.
 
 | Mode | Result | Border setting |
 | --- | --- | --- |
-| **Stencil** | A rectangular plate with each closed SVG path removed | Adds material around the artwork |
-| **SVG shape** | Each closed SVG path is extruded into a solid piece | Ignored |
+| **Stencil plate** | A rectangular plate with each closed SVG path removed | Adds material around the artwork |
+| **Solid shape** | Each closed SVG path is extruded into a solid piece | Ignored |
 
-SVG shape mode may create several disconnected pieces in one STL when the SVG
+Solid shape mode may create several disconnected pieces in one STL when the SVG
 contains several paths. Confirm in your slicer that every intended piece is on
 the build plate.
 
@@ -76,10 +76,10 @@ Open <http://localhost:8080> and try
 ## Using the application
 
 1. Choose or drop an SVG file.
-2. Select **Stencil** or **SVG shape**.
+2. Select **Stencil plate** or **Solid shape**.
 3. Set the required dimensions in millimetres.
 4. Adjust curve detail if the artwork contains arcs or curves.
-5. Select **Create stencil** or **Create SVG shape**.
+5. Select **Create stencil plate** or **Create solid shape**.
 6. Review the reported dimensions and validation results.
 7. Select **STL** in the preview to inspect the generated mesh in 3D.
 8. Download the STL and inspect it in your slicer before printing.

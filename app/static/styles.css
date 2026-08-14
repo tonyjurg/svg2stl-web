@@ -317,7 +317,7 @@ h1 { margin-bottom: 0; font-size: 28px; line-height: 1.05; font-weight: 760; }
 }
 
 .preview-mode, .view-controls button {
-  min-width: 38px;
+  min-width: 92px;
   height: 28px;
   padding: 0 9px;
   border: 0;
@@ -425,7 +425,7 @@ h1 { margin-bottom: 0; font-size: 28px; line-height: 1.05; font-weight: 760; }
 
 .download-button { min-width: 180px; padding: 0 18px; color: var(--ink); background: var(--yellow); }
 .download-button:hover { background: #dfb736; }
-.download-button span { font-size: 21px; }
+.download-button .download-icon { font-size: 21px; }
 
 footer {
   min-height: 45px;

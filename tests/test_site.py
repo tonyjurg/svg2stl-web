@@ -59,11 +59,15 @@ def test_pages_site_includes_both_animated_outputs_and_reduced_motion() -> None:
     page = (SITE / "index.html").read_text(encoding="utf-8")
     styles = (SITE / "styles.css").read_text(encoding="utf-8")
 
+    assert "Create precise stencils from your SVG artwork" in page
+    assert "Stencil is the main event" in page
+    assert "Design stencil bridges" in page
     assert 'class="form-animation"' in page
     assert 'class="stencil-animation"' in page
     assert 'id="motion-toggle"' in page
     assert "@keyframes form-rise" in styles
     assert "@keyframes cutter-drop" in styles
+    assert "@keyframes stencil-lift" in styles
     assert "@media (prefers-reduced-motion: reduce)" in styles
 
 

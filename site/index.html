@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="A private, self-hosted SVG-to-STL workshop for validated stencil plates and solid forms.">
-    <meta name="theme-color" content="#071b1a">
-    <title>SVG to STL · From vector paths to printable geometry</title>
+    <meta name="description" content="Turn closed SVG paths into validated, 3D-printable stencil plates or solid shapes on your own machine.">
+    <meta name="theme-color" content="#f7faf7">
+    <title>SVG to STL | Create printable stencils from SVG artwork</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
     <script src="site.js" defer></script>
@@ -19,7 +19,7 @@
           <path d="M7 9h17l9 8v14H16l-9-8Z"/>
           <path d="m7 9 9 8h17M16 17v14"/>
         </svg>
-        <span>SVG<span class="brand-arrow">→</span>STL</span>
+        <span>SVG <span class="brand-arrow">&rarr;</span> STL</span>
       </a>
 
       <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
@@ -29,120 +29,171 @@
 
       <nav class="site-nav" id="site-nav" aria-label="Main navigation">
         <a href="#workflow">How it works</a>
-        <a href="#outputs">Outputs</a>
-        <a href="#confidence">Validation</a>
+        <a href="#outputs">Stencil examples</a>
+        <a href="#prepare">Prepare artwork</a>
         <a href="#documentation">Documentation</a>
-        <a class="nav-github" href="https://github.com/tonyjurg/svg2stl-web">GitHub ↗</a>
+        <a class="nav-github" href="https://github.com/tonyjurg/svg2stl-web">GitHub <span>&nearr;</span></a>
       </nav>
     </header>
 
     <main id="main-content">
       <section class="hero" id="top">
         <div class="hero-copy">
-          <p class="eyebrow"><span></span> Self-hosted · private by default</p>
-          <h1>Vector paths in.<br><em>Printable geometry</em> out.</h1>
+          <p class="eyebrow"><span></span> A self-hosted stencil workshop</p>
+          <p class="hero-badge">SVG artwork &rarr; printable stencil plate</p>
+          <h1>Create precise stencils from your SVG artwork.</h1>
           <p class="hero-lead">
-            Convert closed SVG paths into a solid form or a stencil plate.
-            Set real dimensions, inspect the result, and download only after
-            the mesh passes printability checks.
+            Upload closed vector paths, choose the finished height and border,
+            then generate a validated STL plate with your artwork cut all the
+            way through. Preview it in 3D before it reaches your slicer.
           </p>
           <div class="hero-actions">
-            <a class="button button-primary" href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/DEPLOYMENT.md">Deploy on Synology <span>→</span></a>
-            <a class="button button-secondary" href="https://github.com/tonyjurg/svg2stl-web">View the repository <span>↗</span></a>
+            <a class="button button-primary" href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/DEPLOYMENT.md">Install on Synology <span>&rarr;</span></a>
+            <a class="button button-secondary" href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/USAGE.md">Read the user guide <span>&rarr;</span></a>
           </div>
-          <ul class="hero-facts" aria-label="Highlights">
-            <li><span>01</span>No cloud upload</li>
-            <li><span>02</span>Validated STL</li>
-            <li><span>03</span>Slicer-ready</li>
+          <ul class="hero-facts" aria-label="Main benefits">
+            <li><strong>Stencil-first</strong><span>Artwork becomes clean through-openings</span></li>
+            <li><strong>Private</strong><span>Files stay on your own Docker host</span></li>
+            <li><strong>Checked</strong><span>Only validated meshes are downloaded</span></li>
           </ul>
         </div>
 
-        <div class="hero-visual" aria-label="Animated SVG to STL conversion overview">
-          <div class="visual-window">
-            <div class="window-bar">
+        <div class="hero-visual" aria-label="Animated preview of an SVG becoming a three-dimensional stencil plate">
+          <div class="app-window">
+            <div class="app-window-bar">
               <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-              <span>local workshop</span>
-              <span class="window-state"><i></i> ready</span>
+              <strong>STENCIL WORKSHOP</strong>
+              <span class="ready-dot"><i></i> LOCAL</span>
             </div>
-            <div class="conversion-stage">
-              <div class="source-card">
-                <span class="stage-label">SOURCE SVG</span>
-                <svg viewBox="0 0 180 130" aria-hidden="true">
-                  <circle cx="62" cy="65" r="29"/>
-                  <path d="m108 92 25-50 25 50Z"/>
-                </svg>
-                <span class="source-name">artwork.svg</span>
-              </div>
-              <div class="conversion-arrow" aria-hidden="true">
-                <span></span><i>→</i>
-              </div>
-              <div class="mesh-card">
-                <span class="stage-label">VALIDATED STL</span>
-                <svg class="hero-mesh" viewBox="0 0 230 160" aria-hidden="true">
+            <div class="app-layout">
+              <aside class="settings-panel">
+                <span class="panel-label">SOURCE ARTWORK</span>
+                <div class="upload-preview">
+                  <svg viewBox="0 0 140 92" aria-hidden="true">
+                    <circle cx="43" cy="46" r="20"/>
+                    <path d="m79 66 23-43 24 43Z"/>
+                  </svg>
+                  <span>simple_shapes.svg</span>
+                </div>
+                <div class="mode-row"><span>Output</span><strong>Stencil plate</strong></div>
+                <div class="field-row"><span>Artwork height</span><strong>80 mm</strong></div>
+                <div class="field-row"><span>Plate thickness</span><strong>3 mm</strong></div>
+                <div class="field-row"><span>Outer border</span><strong>10 mm</strong></div>
+                <div class="fake-button">Create stencil plate</div>
+              </aside>
+              <div class="preview-panel">
+                <div class="preview-toolbar">
+                  <span><i></i> VALIDATED STL</span>
+                  <span>drag to rotate &middot; scroll to zoom</span>
+                </div>
+                <svg class="hero-stencil" viewBox="0 0 620 430" role="img" aria-labelledby="hero-stencil-title">
+                  <title id="hero-stencil-title">A realistic three-dimensional stencil plate with circular and triangular openings</title>
                   <defs>
-                    <mask id="hero-cutouts">
-                      <rect width="230" height="160" fill="white"/>
-                      <ellipse cx="91" cy="75" rx="28" ry="20" fill="black"/>
-                      <path d="m130 99 25-49 25 49Z" fill="black"/>
+                    <linearGradient id="hero-plate-top" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#6edac8"/>
+                      <stop offset="0.52" stop-color="#23b7a3"/>
+                      <stop offset="1" stop-color="#098979"/>
+                    </linearGradient>
+                    <linearGradient id="hero-plate-edge" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" stop-color="#08766b"/>
+                      <stop offset="1" stop-color="#04584f"/>
+                    </linearGradient>
+                    <radialGradient id="hero-shadow">
+                      <stop offset="0" stop-color="#52736c" stop-opacity=".34"/>
+                      <stop offset="1" stop-color="#52736c" stop-opacity="0"/>
+                    </radialGradient>
+                    <mask id="hero-holes">
+                      <rect width="620" height="430" fill="white"/>
+                      <ellipse cx="309" cy="208" rx="60" ry="34" transform="rotate(-8 309 208)" fill="black"/>
+                      <path d="m390 247 50-101 59 84Z" fill="black"/>
                     </mask>
+                    <clipPath id="hero-top-clip">
+                      <path d="m151 153 324-71 77 193-327 73Z"/>
+                    </clipPath>
                   </defs>
-                  <path class="mesh-side" d="m34 59 151-24 18 65-151 25Z"/>
-                  <path class="mesh-edge" d="m52 125 151-25v12L52 137Z"/>
-                  <path class="mesh-top" d="m34 47 151-24 18 65-151 25Z" mask="url(#hero-cutouts)"/>
-                  <path class="mesh-shine" d="m45 50 132-21"/>
+                  <g class="hero-grid">
+                    <path d="M42 336h520M70 374l418-250M142 402l418-250M14 290l418-250M188 88l376 241M104 133l376 241"/>
+                  </g>
+                  <ellipse class="object-shadow" cx="350" cy="348" rx="245" ry="50" fill="url(#hero-shadow)"/>
+                  <g class="hero-plate">
+                    <path class="hero-back-edge" d="m151 153 324-71 77 193v21l-327 73v-21l327-73-77-193-324 71Z"/>
+                    <path class="hero-front-edge" d="m225 348 327-73v21l-327 73Z" fill="url(#hero-plate-edge)"/>
+                    <path class="hero-left-edge" d="m151 153 74 195v21l-74-195Z"/>
+                    <path class="hero-top" d="m151 153 324-71 77 193-327 73Z" fill="url(#hero-plate-top)" mask="url(#hero-holes)"/>
+                    <g class="cut-wall" clip-path="url(#hero-top-clip)">
+                      <ellipse cx="309" cy="214" rx="60" ry="34" transform="rotate(-8 309 214)"/>
+                      <path d="m390 253 50-101 59 84v9l-59-84-50 101Z"/>
+                    </g>
+                    <path class="plate-highlight" d="m166 157 301-66M235 338l301-67"/>
+                  </g>
+                  <g class="dimension width-dimension">
+                    <path d="m224 389 327-73M224 380v18M551 307v18"/>
+                    <text x="378" y="370">125.4 mm</text>
+                  </g>
+                  <g class="dimension depth-dimension">
+                    <path d="m570 287-77-193M561 290l18-7M484 98l18-7"/>
+                    <text x="530" y="178" transform="rotate(68 530 178)">100 mm</text>
+                  </g>
+                  <g class="mesh-checks">
+                    <rect x="36" y="32" width="148" height="33" rx="16"/>
+                    <circle cx="54" cy="48" r="6"/>
+                    <text x="68" y="52">WATERTIGHT MESH</text>
+                  </g>
                 </svg>
-                <div class="validation-row"><span>✓ Watertight</span><span>✓ Winding</span></div>
+                <div class="preview-footer"><span>stencil.stl</span><strong>Ready to download</strong></div>
               </div>
             </div>
           </div>
-          <div class="hero-note"><span>LOCAL</span> Files stay on your machine</div>
         </div>
       </section>
 
-      <section class="signal-strip" aria-label="Project qualities">
-        <span>Closed SVG paths</span><i></i>
-        <span>Millimetre dimensions</span><i></i>
-        <span>Binary STL</span><i></i>
-        <span>Mesh validation</span><i></i>
-        <span>Docker deployment</span>
+      <section class="purpose-strip" aria-label="Common stencil uses">
+        <strong>Made for repeatable marking</strong>
+        <span>Workshop labels</span><i></i>
+        <span>Paint masks</span><i></i>
+        <span>Craft templates</span><i></i>
+        <span>Signs and symbols</span>
+      </section>
+
+      <section class="section stencil-purpose">
+        <div class="purpose-copy">
+          <p class="eyebrow"><span></span> What stencil mode actually creates</p>
+          <h2>Your paths become openings, not raised shapes.</h2>
+          <p>
+            The converter places your artwork inside a rectangular plate and
+            subtracts every closed contour. The result is one printable sheet
+            that you can place, paint through, lift, and reuse.
+          </p>
+        </div>
+        <dl class="definition-grid">
+          <div><dt>Artwork height</dt><dd>Controls the finished height of your SVG contours in millimetres.</dd></div>
+          <div><dt>Outer border</dt><dd>Adds plate material around every side of the artwork.</dd></div>
+          <div><dt>Plate thickness</dt><dd>Sets the Z thickness of the printable stencil sheet.</dd></div>
+          <div><dt>Output</dt><dd>A binary STL named with the <code>_stencil.stl</code> suffix.</dd></div>
+        </dl>
       </section>
 
       <section class="section workflow" id="workflow">
-        <div class="section-intro">
-          <p class="eyebrow eyebrow-dark"><span></span> A short path to a trustworthy mesh</p>
-          <h2>Three deliberate steps.<br>No CAD detour.</h2>
-          <p>The interface stays approachable while the converter handles geometry construction and validation behind the scenes.</p>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow"><span></span> From artwork to a reusable tool</p>
+            <h2>Four clear steps.<br>No CAD redraw.</h2>
+          </div>
+          <p>Everything happens in one browser page. Your SVG and STL remain temporary and local to the service.</p>
         </div>
         <ol class="workflow-steps">
-          <li>
-            <span class="step-index">01</span>
-            <div class="step-icon path-icon" aria-hidden="true"><i></i></div>
-            <h3>Bring clean paths</h3>
-            <p>Upload an SVG containing explicitly closed paths. Text and primitives should be converted to paths first.</p>
-            <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/USAGE.md#preparing-an-svg">Prepare an SVG →</a>
-          </li>
-          <li>
-            <span class="step-index">02</span>
-            <div class="step-icon measure-icon" aria-hidden="true"><i></i></div>
-            <h3>Choose the outcome</h3>
-            <p>Create a solid form or cut the artwork through a bordered stencil plate. Dimensions are set in millimetres.</p>
-            <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/USAGE.md#choose-an-output-mode">Compare output modes →</a>
-          </li>
-          <li>
-            <span class="step-index">03</span>
-            <div class="step-icon check-icon" aria-hidden="true">✓</div>
-            <h3>Inspect, then print</h3>
-            <p>Rotate the generated STL in-browser. Download begins only after topology and orientation checks pass.</p>
-            <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/USAGE.md#validation-results">Understand validation →</a>
-          </li>
+          <li><span class="step-index">01</span><div class="step-visual file-step" aria-hidden="true"><i>SVG</i></div><h3>Upload paths</h3><p>Choose an SVG containing simple, explicitly closed path contours.</p></li>
+          <li><span class="step-index">02</span><div class="step-visual settings-step" aria-hidden="true"><i></i><i></i><i></i></div><h3>Set real dimensions</h3><p>Enter artwork height, plate thickness, and the surrounding border in millimetres.</p></li>
+          <li><span class="step-index">03</span><div class="step-visual preview-step" aria-hidden="true"><i></i></div><h3>Inspect in 3D</h3><p>Rotate, pan, and zoom the generated stencil before accepting the result.</p></li>
+          <li><span class="step-index">04</span><div class="step-visual check-step" aria-hidden="true">&check;</div><h3>Download a checked STL</h3><p>Download becomes available only after mesh and topology validation succeed.</p></li>
         </ol>
       </section>
 
-      <section class="section outputs" id="outputs">
+      <section class="section use-cases" id="outputs">
         <div class="outputs-heading">
           <div>
-            <p class="eyebrow"><span></span> One SVG · two useful outcomes</p>
-            <h2>Form or stencil.<br>You choose the material.</h2>
+            <p class="eyebrow"><span></span> See what changes between modes</p>
+            <h2>Stencil is the main event.<br>Solid shapes are included too.</h2>
           </div>
           <button class="motion-toggle" id="motion-toggle" type="button" aria-pressed="false">
             <span class="pause-icon" aria-hidden="true"></span>
@@ -150,197 +201,176 @@
           </button>
         </div>
 
-        <div class="output-grid">
-          <article class="output-card form-card">
-            <div class="output-copy">
-              <span class="output-number">A</span>
-              <p class="output-type">SOLID FORM</p>
-              <h3>The path becomes the object.</h3>
-              <p>Every closed contour is extruded as material—ideal for badges, tokens, ornaments, signs, and flat relief components.</p>
-              <ul>
-                <li>No surrounding plate</li>
-                <li>Original proportions preserved</li>
-                <li>Several contours can become several solids</li>
-              </ul>
-            </div>
-            <div class="output-animation" aria-label="Animation showing SVG outlines rising into solid forms">
-              <span class="animation-caption">2D paths</span>
-              <svg class="form-animation" viewBox="0 0 620 360" role="img" aria-labelledby="form-animation-title">
-                <title id="form-animation-title">A circle and triangle SVG becoming raised solid forms</title>
-                <defs>
-                  <linearGradient id="form-top" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0" stop-color="#42d7c5"/>
-                    <stop offset="1" stop-color="#0b8d82"/>
-                  </linearGradient>
-                </defs>
-                <g class="floor-grid">
-                  <path d="M50 282h515M80 310l390-196M155 334l390-196M5 248l390-196M226 78l339 204M151 116l339 204M302 39l263 158"/>
+        <article class="use-case stencil-use-case">
+          <div class="use-case-copy">
+            <span class="mode-pill">PRIMARY MODE</span>
+            <p class="output-type">STENCIL PLATE</p>
+            <h3>The artwork is cut through a bordered plate.</h3>
+            <p>Every closed contour becomes an opening. The border joins the surrounding material into one plate that is simple to position and print.</p>
+            <ul>
+              <li>One connected rectangular plate</li>
+              <li>Configurable border and thickness</li>
+              <li>Useful for paint, ink, routing guides, and templates</li>
+            </ul>
+            <a class="text-link" href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/USAGE.md#stencil">Read about stencil mode &rarr;</a>
+          </div>
+          <div class="output-animation stencil-animation-wrap" aria-label="Animation showing closed SVG paths becoming openings in a realistic three-dimensional stencil plate">
+            <div class="animation-head"><span>CONVERSION SEQUENCE</span><strong>stencil.stl</strong></div>
+            <svg class="stencil-animation" viewBox="0 0 760 430" role="img" aria-labelledby="stencil-animation-title">
+              <title id="stencil-animation-title">Closed circular and triangular SVG paths are placed in a border, cut through it, and lifted as a three-dimensional stencil plate</title>
+              <defs>
+                <linearGradient id="stencil-top-real" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#72d9ca"/><stop offset=".58" stop-color="#26b7a4"/><stop offset="1" stop-color="#0a8779"/></linearGradient>
+                <linearGradient id="stencil-edge-real" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#087568"/><stop offset="1" stop-color="#044e48"/></linearGradient>
+                <radialGradient id="stencil-shadow-real"><stop offset="0" stop-color="#55756f" stop-opacity=".28"/><stop offset="1" stop-color="#55756f" stop-opacity="0"/></radialGradient>
+                <mask id="real-stencil-holes"><rect width="760" height="430" fill="white"/><ellipse cx="578" cy="222" rx="44" ry="26" transform="rotate(-8 578 222)" fill="black"/><path d="m627 260 39-79 47 66Z" fill="black"/></mask>
+                <clipPath id="real-stencil-clip"><path d="m462 174 225-50 55 143-226 51Z"/></clipPath>
+              </defs>
+              <g class="sequence-guides"><path d="M252 222h62M400 222h53"/><path d="m302 214 12 8-12 8M441 214l12 8-12 8"/></g>
+              <g class="source-stage">
+                <rect x="35" y="111" width="205" height="222" rx="12"/>
+                <text class="stage-number" x="55" y="141">01</text><text class="stage-name" x="86" y="141">CLOSED SVG PATHS</text>
+                <circle cx="111" cy="219" r="34"/>
+                <path d="m151 260 33-72 40 72Z"/>
+                <text class="stage-note" x="55" y="308">simple_shapes.svg</text>
+              </g>
+              <g class="border-stage">
+                <rect x="321" y="133" width="132" height="178" rx="8"/>
+                <text class="stage-number" x="338" y="162">02</text><text class="stage-name" x="369" y="162">BORDER</text>
+                <rect class="flat-plate" x="338" y="182" width="98" height="95" rx="3"/>
+                <ellipse class="flat-hole" cx="369" cy="226" rx="18" ry="14"/>
+                <path class="flat-hole" d="m390 250 15-37 20 37Z"/>
+                <path class="cut-ray" d="M369 173v41M405 173v37"/>
+                <circle class="cut-spark spark-one" cx="369" cy="214" r="3"/>
+                <circle class="cut-spark spark-two" cx="405" cy="210" r="3"/>
+              </g>
+              <g class="result-stage">
+                <text class="stage-number" x="497" y="94">03</text><text class="stage-name" x="528" y="94">PRINTABLE PLATE</text>
+                <ellipse class="result-shadow" cx="604" cy="340" rx="150" ry="35" fill="url(#stencil-shadow-real)"/>
+                <g class="stencil-result">
+                  <path class="plate-back" d="m462 174 225-50 55 143v18l-226 51v-18l226-51-55-143-225 50Z"/>
+                  <path class="plate-front" d="m516 318 226-51v18l-226 51Z" fill="url(#stencil-edge-real)"/>
+                  <path class="plate-left" d="m462 174 54 144v18l-54-144Z"/>
+                  <path class="plate-surface" d="m462 174 225-50 55 143-226 51Z" fill="url(#stencil-top-real)" mask="url(#real-stencil-holes)"/>
+                  <g class="hole-walls" clip-path="url(#real-stencil-clip)"><ellipse cx="578" cy="228" rx="44" ry="26" transform="rotate(-8 578 228)"/><path d="m627 266 39-79 47 66v8l-47-66-39 79Z"/></g>
+                  <path class="surface-shine" d="m475 176 206-45M525 309l204-46"/>
                 </g>
-                <g class="source-outline">
-                  <ellipse cx="150" cy="215" rx="58" ry="36"/>
-                  <path d="m228 257 51-96 51 96Z"/>
-                </g>
-                <path class="motion-line" d="M345 210h75"/>
-                <path class="motion-arrow" d="m412 201 12 9-12 9"/>
-                <g class="solid-group">
-                  <g class="solid-circle">
-                    <path class="solid-side" d="M447 224c0 22 31 40 69 40s69-18 69-40v24c0 22-31 40-69 40s-69-18-69-40Z"/>
-                    <ellipse class="solid-top" cx="516" cy="224" rx="69" ry="40"/>
-                  </g>
-                  <g class="solid-triangle">
-                    <path class="solid-side" d="m439 208 59-111 70 111v24L498 121l-59 111Z"/>
-                    <path class="solid-top" d="m439 208 59-111 70 111Z"/>
-                  </g>
-                </g>
-              </svg>
-              <span class="animation-result">solid_shape.stl</span>
-            </div>
-          </article>
+                <g class="thickness-mark"><path d="M724 292h20M724 275v25"/><text x="661" y="303">3 mm</text></g>
+              </g>
+            </svg>
+            <div class="sequence-legend" aria-hidden="true"><span><i></i> Paths</span><span><i></i> Subtraction</span><span><i></i> Valid STL</span></div>
+          </div>
+        </article>
 
-          <article class="output-card stencil-card">
-            <div class="output-copy">
-              <span class="output-number">B</span>
-              <p class="output-type">STENCIL PLATE</p>
-              <h3>The path becomes the opening.</h3>
-              <p>Closed contours are removed from a bordered plate—ready for paint masks, craft templates, labels, and repeatable markings.</p>
-              <ul>
-                <li>Configurable outer border</li>
-                <li>Clean through-openings</li>
-                <li>One validated printable plate</li>
-              </ul>
-            </div>
-            <div class="output-animation" aria-label="Animation showing SVG shapes cutting openings through a stencil plate">
-              <span class="animation-caption">closed paths</span>
-              <svg class="stencil-animation" viewBox="0 0 620 360" role="img" aria-labelledby="stencil-animation-title">
-                <title id="stencil-animation-title">A circle and triangle cutting through a stencil plate</title>
-                <defs>
-                  <mask id="stencil-holes">
-                    <rect width="620" height="360" fill="white"/>
-                    <ellipse cx="297" cy="187" rx="67" ry="39" fill="black"/>
-                    <path d="m374 231 55-101 57 101Z" fill="black"/>
-                  </mask>
-                  <linearGradient id="stencil-top" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0" stop-color="#f1d96b"/>
-                    <stop offset="1" stop-color="#d7a928"/>
-                  </linearGradient>
-                </defs>
-                <g class="floor-grid stencil-grid">
-                  <path d="M50 292h515M80 320l390-196M155 344l390-196M5 258l390-196M226 88l339 204M151 126l339 204M302 49l263 158"/>
-                </g>
-                <g class="cutters">
-                  <ellipse cx="297" cy="123" rx="67" ry="39"/>
-                  <path d="m374 167 55-101 57 101Z"/>
-                  <path class="cut-line" d="M297 129v57M429 172v58"/>
-                </g>
-                <g class="plate-result">
-                  <path class="plate-edge" d="m124 188 359-74 53 126-359 76Z"/>
-                  <path class="plate-lip" d="m177 316 359-76v22l-359 76Z"/>
-                  <path class="plate-top" d="m124 166 359-74 53 126-359 76Z" mask="url(#stencil-holes)"/>
-                </g>
-              </svg>
-              <span class="animation-result">stencil.stl</span>
-            </div>
-          </article>
+        <article class="use-case form-use-case">
+          <div class="use-case-copy">
+            <p class="output-type">ALTERNATIVE MODE</p>
+            <h3>Need the shapes themselves? Extrude them as solid forms.</h3>
+            <p>Switch to Solid shape and each closed contour becomes material instead of an opening. This is useful for badges, ornaments, tokens, and flat relief parts.</p>
+            <ul><li>No surrounding plate</li><li>Original proportions preserved</li><li>Several paths may produce separate solids</li></ul>
+            <a class="text-link" href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/USAGE.md#solid-shape">Read about solid shape mode &rarr;</a>
+          </div>
+          <div class="output-animation form-animation-wrap" aria-label="Animation showing closed SVG paths extruding into realistic solid forms">
+            <div class="animation-head"><span>EXTRUSION SEQUENCE</span><strong>solid_shape.stl</strong></div>
+            <svg class="form-animation" viewBox="0 0 620 360" role="img" aria-labelledby="form-animation-title">
+              <title id="form-animation-title">A circular and triangular SVG outline extruding upward into solid printable objects</title>
+              <defs>
+                <linearGradient id="form-top-real" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd879"/><stop offset=".55" stop-color="#f2b840"/><stop offset="1" stop-color="#d99815"/></linearGradient>
+                <linearGradient id="form-side-real" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c98610"/><stop offset="1" stop-color="#946006"/></linearGradient>
+                <radialGradient id="form-shadow-real"><stop offset="0" stop-color="#816c48" stop-opacity=".25"/><stop offset="1" stop-color="#816c48" stop-opacity="0"/></radialGradient>
+              </defs>
+              <g class="form-grid"><path d="M30 297h560M55 330l430-237M132 351 562 114M5 264 435 27M180 82l387 226M100 128l387 226"/></g>
+              <g class="form-source"><text x="45" y="56">2D PATHS</text><ellipse cx="118" cy="218" rx="54" ry="32"/><path d="m181 258 46-91 53 91Z"/></g>
+              <g class="extrusion-guides"><path d="M303 217h74"/><path d="m365 208 12 9-12 9"/><text x="309" y="201">EXTRUDE</text></g>
+              <ellipse class="form-shadow" cx="485" cy="292" rx="116" ry="32" fill="url(#form-shadow-real)"/>
+              <g class="solid-group">
+                <g class="circle-solid"><path class="solid-side-real" d="M395 228c0 22 29 40 65 40s65-18 65-40v31c0 22-29 40-65 40s-65-18-65-40Z" fill="url(#form-side-real)"/><ellipse class="solid-top-real" cx="460" cy="228" rx="65" ry="40" fill="url(#form-top-real)"/><path class="solid-highlight" d="M414 214c12-17 40-26 65-20"/></g>
+                <g class="triangle-solid"><path class="solid-side-real" d="m429 226 57-115 70 115v29L486 140l-57 115Z" fill="url(#form-side-real)"/><path class="solid-top-real" d="m429 226 57-115 70 115Z" fill="url(#form-top-real)"/><path class="solid-highlight" d="m441 219 46-91 55 91"/></g>
+              </g>
+              <g class="form-measure"><path d="M394 316h164M394 307v18M558 307v18"/><text x="448" y="339">80 mm</text></g>
+            </svg>
+          </div>
+        </article>
+      </section>
+
+      <section class="section preparation" id="prepare">
+        <div class="section-heading">
+          <div><p class="eyebrow"><span></span> Prepare artwork that converts predictably</p><h2>A good stencil starts with simple paths.</h2></div>
+          <p>The service intentionally supports a small, predictable SVG subset. A few minutes of preparation in Inkscape or Illustrator prevents most conversion errors.</p>
         </div>
+        <div class="preparation-grid">
+          <article><span class="info-number">01</span><h3>Convert everything to paths</h3><p>Turn text, rectangles, circles, polygons, and visible strokes into path geometry before export.</p></article>
+          <article><span class="info-number">02</span><h3>Close every contour</h3><p>Open strokes have no inside or outside, so only explicitly closed path contours are converted.</p></article>
+          <article><span class="info-number">03</span><h3>Design stencil bridges</h3><p>Letters with enclosed centres, such as A, B, O, and P, need bridges so their interior islands remain attached.</p></article>
+          <article><span class="info-number">04</span><h3>Avoid nested or overlapping paths</h3><p>Use independent, non-overlapping contours. Complex fill rules and nested islands are not resolved automatically.</p></article>
+        </div>
+        <div class="preparation-note"><strong>Not sure if your file is suitable?</strong><span>Start with the included <a href="https://github.com/tonyjurg/svg2stl-web/tree/main/examples">simple shapes example</a>, then compare its path structure with your own SVG.</span></div>
       </section>
 
       <section class="section confidence" id="confidence">
         <div class="confidence-copy">
-          <p class="eyebrow eyebrow-dark"><span></span> Confidence before download</p>
-          <h2>A file is not a result.<br>A checked mesh is.</h2>
-          <p>The service rejects output that fails its printability contract. Every successful download includes measurements and topology signals you can inspect before opening your slicer.</p>
-          <a class="text-link" href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/USAGE.md#validation-results">Read the validation contract →</a>
+          <p class="eyebrow"><span></span> Confidence before download</p>
+          <h2>The STL must pass before you can download it.</h2>
+          <p>The service checks whether the generated mesh is a usable enclosed volume. The report makes failures visible instead of handing an invalid file to your slicer.</p>
+          <a class="text-link" href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/USAGE.md#validation-results">Read the validation contract &rarr;</a>
         </div>
         <div class="validation-board">
-          <div class="validation-head">
-            <span>mesh report</span>
-            <strong>READY</strong>
-          </div>
+          <div class="validation-head"><span>MESH REPORT</span><strong><i></i> READY</strong></div>
           <ul>
-            <li><span>Watertight surface</span><strong><i>✓</i> Passed</strong></li>
-            <li><span>Consistent winding</span><strong><i>✓</i> Passed</strong></li>
-            <li><span>Manifold edges</span><strong><i>✓</i> Passed</strong></li>
-            <li><span>Positive volume</span><strong><i>✓</i> Passed</strong></li>
-            <li><span>Duplicate faces</span><strong><i>✓</i> None</strong></li>
+            <li><span>Watertight surface</span><strong>&check; Passed</strong></li>
+            <li><span>Consistent winding</span><strong>&check; Passed</strong></li>
+            <li><span>Manifold edges</span><strong>&check; Passed</strong></li>
+            <li><span>Positive volume</span><strong>&check; Passed</strong></li>
+            <li><span>Duplicate faces</span><strong>&check; None</strong></li>
           </ul>
-          <div class="metric-line"><span>180.0 × 100.0 × 3.0 mm</span><span>2,634 triangles</span></div>
+          <div class="metric-line"><span>125.4 &times; 100.0 &times; 3.0 mm</span><span>2,634 triangles</span></div>
         </div>
       </section>
 
       <section class="section self-hosted">
         <div class="terminal-card" aria-label="Docker Compose quick start command">
-          <div class="terminal-head"><span></span><span></span><span></span><strong>workshop — compose</strong></div>
+          <div class="terminal-head"><span></span><span></span><span></span><strong>DOCKER COMPOSE</strong></div>
           <pre><code><span>$</span> git clone https://github.com/tonyjurg/svg2stl-web.git
 <span>$</span> cd svg2stl-web
 <span>$</span> docker compose up --build -d
 
-<em>✓ service available at :8080</em></code></pre>
+<em>&check; service available at :8080</em></code></pre>
         </div>
         <div class="self-hosted-copy">
-          <p class="eyebrow"><span></span> Own the workshop</p>
-          <h2>Runs where your files already live.</h2>
-          <p>Deploy on an x86-64 Synology NAS or any Docker host. Uploads and generated files are temporary, the container runs non-root, and no account or external service is required.</p>
-          <div class="host-facts">
-            <span><strong>Docker</strong> Compose ready</span>
-            <span><strong>Local</strong> LAN-friendly</span>
-            <span><strong>Private</strong> No telemetry</span>
-          </div>
-          <a class="button button-light" href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/DEPLOYMENT.md">Open deployment guide <span>→</span></a>
+          <p class="eyebrow"><span></span> Keep the workshop local</p>
+          <h2>Runs on your Synology or Docker host.</h2>
+          <p>No account, subscription, telemetry, or cloud upload is required. The non-root container accepts temporary uploads, builds the STL, and returns the result directly to your browser.</p>
+          <div class="host-facts"><span><strong>x86-64</strong>Synology ready</span><span><strong>Docker</strong>Compose included</span><span><strong>Private</strong>LAN-friendly</span></div>
+          <a class="button button-secondary" href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/DEPLOYMENT.md">Open deployment guide <span>&rarr;</span></a>
         </div>
       </section>
 
       <section class="section documentation" id="documentation">
-        <div class="docs-heading">
-          <div>
-            <p class="eyebrow eyebrow-dark"><span></span> Go as deep as you need</p>
-            <h2>The overview ends here.<br>The details do not.</h2>
-          </div>
-          <p>Preparation rules, API fields, Docker hardening, authentication, architecture, and failure modes are all documented in the repository.</p>
+        <div class="section-heading docs-heading">
+          <div><p class="eyebrow"><span></span> Detailed documentation</p><h2>Every setting, limit, and deployment step.</h2></div>
+          <p>This page explains the idea. The repository documentation covers exact preparation rules, API fields, troubleshooting, security, and development.</p>
         </div>
         <div class="docs-grid">
-          <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/USAGE.md">
-            <span class="doc-code">01 / USE</span><strong>Prepare artwork & choose settings</strong><i>→</i>
-          </a>
-          <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/DEPLOYMENT.md">
-            <span class="doc-code">02 / RUN</span><strong>Deploy with Docker or Synology</strong><i>→</i>
-          </a>
-          <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/TROUBLESHOOTING.md">
-            <span class="doc-code">03 / FIX</span><strong>Diagnose conversion and container issues</strong><i>→</i>
-          </a>
-          <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/API.md">
-            <span class="doc-code">04 / API</span><strong>Integrate the conversion endpoint</strong><i>→</i>
-          </a>
-          <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/DEVELOPMENT.md">
-            <span class="doc-code">05 / DEV</span><strong>Understand architecture and contribute</strong><i>→</i>
-          </a>
-          <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/SECURITY.md">
-            <span class="doc-code">06 / SAFE</span><strong>Review the security model</strong><i>→</i>
-          </a>
+          <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/USAGE.md"><span class="doc-code">01 / USE</span><strong>Prepare SVG artwork and choose dimensions</strong><i>&rarr;</i></a>
+          <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/DEPLOYMENT.md"><span class="doc-code">02 / RUN</span><strong>Deploy with Docker or Synology</strong><i>&rarr;</i></a>
+          <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/TROUBLESHOOTING.md"><span class="doc-code">03 / FIX</span><strong>Diagnose SVG and container problems</strong><i>&rarr;</i></a>
+          <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/API.md"><span class="doc-code">04 / API</span><strong>Automate the conversion endpoint</strong><i>&rarr;</i></a>
+          <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/docs/DEVELOPMENT.md"><span class="doc-code">05 / DEV</span><strong>Understand the architecture and contribute</strong><i>&rarr;</i></a>
+          <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/SECURITY.md"><span class="doc-code">06 / SAFE</span><strong>Review the security model</strong><i>&rarr;</i></a>
         </div>
       </section>
 
       <section class="closing">
-        <p>SVG → geometry → confidence</p>
-        <h2>Make the path printable.</h2>
-        <div>
-          <a class="button button-primary" href="https://github.com/tonyjurg/svg2stl-web">Get SVG to STL <span>↗</span></a>
-          <a class="text-link light-link" href="https://github.com/tonyjurg/svg2stl-web/tree/main/examples">Try the example SVG →</a>
-        </div>
+        <p>YOUR ARTWORK. YOUR MACHINE. YOUR STENCIL.</p>
+        <h2>Turn the next SVG into a tool you can hold.</h2>
+        <div><a class="button button-primary" href="https://github.com/tonyjurg/svg2stl-web">Get SVG to STL <span>&nearr;</span></a><a class="text-link" href="https://github.com/tonyjurg/svg2stl-web/tree/main/examples">Try the example SVG &rarr;</a></div>
       </section>
     </main>
 
     <footer>
-      <a class="brand footer-brand" href="#top">
-        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 9h17l9 8v14H16l-9-8Z"/><path d="m7 9 9 8h17M16 17v14"/></svg>
-        <span>SVG<span class="brand-arrow">→</span>STL</span>
-      </a>
-      <p>Self-hosted SVG-to-STL conversion with validated output.</p>
-      <nav aria-label="Footer navigation">
-        <a href="https://github.com/tonyjurg/svg2stl-web">GitHub</a>
-        <a href="https://github.com/tonyjurg/svg2stl-web/issues">Issues</a>
-        <a href="https://github.com/tonyjurg/svg2stl-web/blob/main/LICENSE">MIT License</a>
-      </nav>
-      <span>© <span id="year">2026</span></span>
+      <a class="brand footer-brand" href="#top"><svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M7 9h17l9 8v14H16l-9-8Z"/><path d="m7 9 9 8h17M16 17v14"/></svg><span>SVG <span class="brand-arrow">&rarr;</span> STL</span></a>
+      <p>Self-hosted SVG conversion for validated, printable stencils.</p>
+      <nav aria-label="Footer navigation"><a href="https://github.com/tonyjurg/svg2stl-web">GitHub</a><a href="https://github.com/tonyjurg/svg2stl-web/issues">Issues</a><a href="https://github.com/tonyjurg/svg2stl-web/blob/main/LICENSE">MIT License</a></nav>
+      <span>&copy; <span id="year">2026</span></span>
     </footer>
   </body>
 </html>

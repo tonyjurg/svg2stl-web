@@ -1,0 +1,11 @@
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.stl binary
+
+app/static/three.core.min.js linguist-vendored
+app/static/three.module.min.js linguist-vendored
+app/static/OrbitControls.js linguist-vendored
+app/static/STLLoader.js linguist-vendored

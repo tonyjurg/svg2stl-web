@@ -2,7 +2,7 @@
 
 [![Verify](https://github.com/tonyjurg/svg2stl-web/actions/workflows/verify.yml/badge.svg)](https://github.com/tonyjurg/svg2stl-web/actions/workflows/verify.yml)
 [![Website](https://img.shields.io/badge/website-GitHub%20Pages-08766d.svg)](https://tonyjurg.github.io/svg2stl-web/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/tonyjurg/svg2stl-web)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A self-hosted web application that converts closed SVG paths into a validated
 STL. It can create either a stencil plate with the artwork cut out or the solid

@@ -121,13 +121,13 @@ def test_pages_workflow_deploys_only_the_static_site() -> None:
         "id-token": "write",
     }
     steps = workflow["jobs"]["deploy"]["steps"]
-    assert any(step.get("uses") == "actions/configure-pages@v5" for step in steps)
+    assert any(step.get("uses") == "actions/configure-pages@v6" for step in steps)
     assert any(
-        step.get("uses") == "actions/upload-pages-artifact@v4"
+        step.get("uses") == "actions/upload-pages-artifact@v5"
         and step.get("with", {}).get("path") == "docs"
         for step in steps
     )
-    assert any(step.get("uses") == "actions/deploy-pages@v4" for step in steps)
+    assert any(step.get("uses") == "actions/deploy-pages@v5" for step in steps)
 
 
 def test_dependency_security_automation_is_enabled() -> None:

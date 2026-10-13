@@ -11,3 +11,4 @@ build/
 .env.auth
 allowed-emails.txt
 test-output/
+docs/assets/social_card.png
